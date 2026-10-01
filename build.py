@@ -17,6 +17,11 @@ frag = io.open('src/game.html', encoding='utf-8').read()
 frag = frag.replace(
     '<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>',
     '<script src="vendor/three.min.js"></script>')
+# The model loader, vendored for the same reason: the installed copy must run
+# with no network at all.
+frag = frag.replace(
+    '<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>',
+    '<script src="vendor/GLTFLoader.js"></script>')
 
 head_extra = '''<meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">

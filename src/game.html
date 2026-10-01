@@ -3,6 +3,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Azeret+Mono:wght@500;700&display=swap">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 <style>
   /* Coilover. One committed world: a desert basin at golden hour, flat shaded,
      with a smoked glass telemetry HUD over it. No theme swap; every colour is
@@ -1513,6 +1514,12 @@ function applyTime(k){
      tint and the truck's rim light were warm cream at midnight */
   lerpHex(A.sun,B.sun,k,STYLE_U.uSunTint.value); STYLE_U.uSunTint.value.convertSRGBToLinear();
   lerpHex(A.sun,B.sun,k,STYLE_U.uRimC.value); STYLE_U.uRimC.value.convertSRGBToLinear();
+  /* AUDIT #4: this drove the paint emissive from PAL.body, which is the
+     Bracken's teal, so every other car glowed teal at dusk. Follow the car. */
+  if(typeof VEHICLES!=='undefined' && typeof VEH!=='undefined' && VEHICLES[VEH]){
+    var _pc=new THREE.Color(VEHICLES[VEH].paint).convertSRGBToLinear();
+    if(typeof paint!=='undefined' && paint.emissive) paint.emissive.copy(_pc).multiplyScalar(TOD.glow*0.5);
+  }
   STYLE_U.uHazeA.value=LF(A.hazeA,B.hazeA);
   if(POST){
     POST.mat.uniforms.uSat.value=LF(A.sat,B.sat);
@@ -2567,6 +2574,159 @@ function buildCityProps(){
   }
 }
 
+/* Replace the procedural wheel and strut meshes with the modelled ones. Safe
+   to call at any time and safe to call twice: it tracks what it has already
+   swapped per corner so a vehicle change does not stack a second set. */
+function applyAssetWheels(V){
+  if(typeof MDL==='undefined' || !MDL.ready() || !STRUT || !STRUT.length) return;
+  var key='vehicles/'+V.id+'_wheels';
+  if(!MDL.has(key)) return;
+  for(var i=0;i<4;i++){
+    var st=STRUT[i];
+    if(st.assetFor===V.id) continue;
+    var hub=st.hub, grp=st.grp;
+
+    /* out with the old: every mesh the old builder put in the hub */
+    for(var q=hub.children.length-1;q>=0;q--) hub.remove(hub.children[q]);
+    if(st.assetCal){ grp.remove(st.assetCal); st.assetCal=null; }
+
+    var wheel=MDL.node(key, V.id+'_wheel', {obj:true,tex:'metal'});
+    var rim  =MDL.node(key, V.id+'_rim',   {obj:true,tex:'metal'});
+    var disc =MDL.node(key, V.id+'_disc',  {obj:true,tex:'metal'});
+    var cal  =MDL.node(key, V.id+'_caliper',{obj:true,tex:'metal'});
+    if(!wheel) continue;
+
+    hub.add(wheel);
+    if(rim)  hub.add(rim);
+    if(disc) hub.add(disc);
+    if(cal){ grp.add(cal); st.assetCal=cal; }
+
+    /* AUDIT #7: the lugs, shoulder and disc used to stand still while the
+       tyre turned. The sync loop spins `wheel` and `rim`; point the rest of
+       the rotating parts at the same thing. */
+    st.wheel=wheel;
+    st.rim=rim||wheel;
+    st.spinExtra=disc? [disc] : [];
+    st.assetFor=V.id;
+
+    /* the strut, which is the same for every vehicle */
+    if(!st.assetStrut && MDL.has('vehicles/strut')){
+      var sp=MDL.node('vehicles/strut','spring',{obj:true,tex:'metal'});
+      var sh=MDL.node('vehicles/strut','shock', {obj:true,tex:'metal'});
+      if(sp && sh){
+        st.spring.visible=false; st.shock.visible=false;
+        grp.add(sp); grp.add(sh);
+        sp.position.copy(st.spring.position);
+        sh.position.copy(st.shock.position);
+        st.spring=sp; st.shock=sh;
+        st.assetStrut=true;
+      }
+    }
+  }
+}
+
+/* ================= assets =================
+   Blender models, loaded once at boot and converted into the game's own
+   materials. `MDL.get(key)` returns a fresh clone of a loaded model; the
+   materials inside it are shared instances, which is what the glow system and
+   the shader patching both require. */
+var MDL=(function(){
+  var ROOT='assets/', manifest=null, cache={}, mats={}, given={}, ready=false;
+
+  /* One material per NAME, not per mesh. LGLOW and GLOW match by identity, and
+     styleMat patches uniforms per material, so cloning would break both. */
+  function matFor(name, spec, opts){
+    /* The game's own material always wins. Its name is the model's name on
+       purpose, and it is the one the rest of the game already drives. */
+    if(given[name]) return given[name];
+    if(mats[name]) return mats[name];
+    var o={ color:sc(spec.color||'#888888'), specular:0x000000, shininess:0,
+            flatShading:true };
+    /* the lofted car panels are the one thing authored smooth, and the
+       generator keeps that, so honour it here too */
+    if(name==='paint') o.flatShading=false;
+    if(spec.opacity!==undefined && spec.opacity<1){
+      o.transparent=true; o.opacity=spec.opacity;
+    }
+    var m=new THREE.MeshPhongMaterial(o);
+    /* A lit part glows rather than being painted bright: register it so the
+       time of day drives it, exactly as the hand built props do. */
+    if(name.indexOf('glow_')===0){
+      m.emissive=new THREE.Color(0x000000);
+      LGLOW.push({m:m, c:new THREE.Color(spec.emissive||spec.color), s:0.95, asset:true});
+    }
+    mats[name]=styleMat(m, opts||{});
+    return mats[name];
+  }
+
+  /* glTF hands us MeshStandardMaterial, which styleMat cannot touch because it
+     patches the Phong shader. Rebuild every one by name. */
+  function convert(root, opts){
+    root.traverse(function(o){
+      if(!o.isMesh) return;
+      o.castShadow=true; o.receiveShadow=true;
+      var src=o.material, nm=(src && src.name) || 'trim';
+      var spec=(MDL.specOf(nm)) || {color:'#'+(src&&src.color? src.color.getHexString():'888888')};
+      o.material=matFor(nm, spec, opts);
+    });
+    return root;
+  }
+
+  var allSpecs={};
+  function indexSpecs(){
+    for(var k in manifest){
+      var ms=manifest[k].materials||{};
+      for(var nm in ms) if(!allSpecs[nm]) allSpecs[nm]=ms[nm];
+    }
+  }
+
+  return {
+    specOf:function(nm){ return allSpecs[nm]; },
+    /* Hand MDL a material the game already owns and drives. */
+    useMaterial:function(nm,m){ given[nm]=m; return m; },
+    ready:function(){ return ready; },
+    /* Used when the swap throws: go back to being the original game. */
+    disable:function(){ ready=false; cache={}; },
+    /* Preload everything behind the title screen. 2.1 MB of GLB, which is one
+       beat on a phone and nothing at all on a laptop. */
+    load:function(onDone,onProgress){
+      var loader=new THREE.GLTFLoader();
+      fetch(ROOT+'manifest.json').then(function(r){ return r.json(); }).then(function(j){
+        manifest=j; indexSpecs();
+        var keys=Object.keys(manifest), done=0;
+        if(!keys.length){ ready=true; onDone&&onDone(); return; }
+        keys.forEach(function(k){
+          fetch(ROOT+manifest[k].file).then(function(r){ return r.arrayBuffer(); })
+            .then(function(buf){
+              loader.parse(buf, '', function(g){
+                cache[k]=g.scene;
+                if(++done===keys.length){ ready=true; onDone&&onDone(); }
+                onProgress&&onProgress(done,keys.length);
+              }, function(){ if(++done===keys.length){ ready=true; onDone&&onDone(); } });
+            })
+            .catch(function(){ if(++done===keys.length){ ready=true; onDone&&onDone(); } });
+        });
+      }).catch(function(){ ready=true; onDone&&onDone(); });   /* no assets: fall back to the built in shells */
+    },
+    has:function(k){ return !!cache[k]; },
+    info:function(k){ return manifest && manifest[k]; },
+    /* A clone per use, with the shared materials carried across. */
+    get:function(k,opts){
+      if(!cache[k]) return null;
+      var c=cache[k].clone(true);
+      return convert(c, opts);
+    },
+    /* One named node out of a model, lifted out of its parent transform. */
+    node:function(k,name,opts){
+      var m=this.get(k,opts); if(!m) return null;
+      var found=null;
+      m.traverse(function(o){ if(!found && o.name===name) found=o; });
+      if(found && found.parent) found.parent.remove(found);
+      return found;
+    }
+  };
+})();
+
 /* ================= the truck ================= */
 /* ---- the fleet ----
    Every number here is load bearing. `body` draws the shell; everything else
@@ -2659,6 +2819,32 @@ var TRUCK_PAINT=null;
   }
   var lampM=glowMat(0xfff3d0,0xfff0c0);
   var tailM=glowMat(0x8c2a22,0xff4530);
+
+  /* ---- hand the real materials to the asset layer ----
+     The Blender materials carry these exact names, so a loaded body picks up
+     the same `paint` object that `__setVehicle` recolours, the same glow
+     materials the time of day drives, and the same grain projection. Without
+     this every car rendered in one colour. */
+  if(typeof MDL!=='undefined'){
+    MDL.useMaterial('paint',    paint);
+    MDL.useMaterial('second',   second);
+    MDL.useMaterial('trim',     trim);
+    MDL.useMaterial('flare',    flare);
+    MDL.useMaterial('carbon',   carbon);
+    MDL.useMaterial('disc',     discM);
+    MDL.useMaterial('caliper',  calM);
+    MDL.useMaterial('shoulder', shoulder);
+    MDL.useMaterial('tyre',     tyreM);
+    MDL.useMaterial('lug',      lugM);
+    MDL.useMaterial('rim',      rimM);
+    MDL.useMaterial('chrome',   chrome);
+    MDL.useMaterial('glass',    glass);
+    MDL.useMaterial('canvas',   canvasM);
+    MDL.useMaterial('spring',   spring);
+    /* the lit parts, so they join the pool the sun already drives */
+    MDL.useMaterial('glow_lamp', lampM);
+    MDL.useMaterial('glow_tail', tailM);
+  }
 
   /* The body hangs in its own group so it can sit lower over the wheels
      without moving the strut mounts, and so a whole shell can be swapped by
@@ -3280,7 +3466,12 @@ var TRUCK_PAINT=null;
     paintF.emissive.copy(new THREE.Color(V.paint).convertSRGBToLinear()).multiplyScalar(0.36);
     paint.emissive.copy(new THREE.Color(V.paint).convertSRGBToLinear()).multiplyScalar(0.36);
     second.color.copy(sc(V.second));
-    SHELLS[V.id](V);
+    /* The Blender body if it has arrived, the hand built shell if not. The
+       model is authored in this exact frame, so it drops in with no offset. */
+    var mdlBody = MDL.ready() ? MDL.get('vehicles/'+V.id+'_body',{obj:true,tex:'paint'}) : null;
+    if(mdlBody){ bodyG.add(mdlBody); }
+    else SHELLS[V.id](V);
+    applyAssetWheels(V);
   };
 })();
 
@@ -4247,6 +4438,9 @@ function sync(dt){
     st.hub.rotation.y=c.front?steerAng:0;
     st.wheel.rotation.x=c.spin;
     st.rim.rotation.x=c.spin;
+    /* AUDIT #7: the disc turns with the wheel it is clamped to */
+    if(st.spinExtra) for(var sx=0;sx<st.spinExtra.length;sx++)
+      st.spinExtra[sx].rotation.x=c.spin;
     /* the lower arm swings to follow the hub */
     st.arm.position.set(c.left?0.24:-0.24,-len*0.92,0);
     st.arm.rotation.z=(c.left?1:-1)*Math.atan2(len*0.30,0.5);
@@ -5153,7 +5347,7 @@ function readInput(dt){
 /* ================= loop ================= */
 var last=performance.now(), acc=0, mapT=0, FIXED=1/200;   /* 0.2 m per step at top speed */
 function frame(now){
-  requestAnimationFrame(frame);
+requestAnimationFrame(frame);
   var dt=Math.min(0.05,(now-last)/1000); last=now;
   if(S.running){
     readInput(dt);
@@ -5672,7 +5866,7 @@ camPos.set(-9,4.5,-11);
 sync(0); updateCam(0.016); hud(0);
 
 if(location.search.indexOf('debug')>=0){
-  window.coilover={S:S,corners:corners,camera:camera,height:height,GATES:GATES,
+  window.coilover={MDL:MDL,S:S,corners:corners,camera:camera,height:height,GATES:GATES,
     place:placeTruck,LANDMARKS:LANDMARKS,PROG:PROG,STONES:STONES,KICKERS:KICKERS,
     TOD:TOD,TIMES:TIMES,applyTime:applyTime,drawMap:drawMap,IN:IN,
     audioOn:audioOn,getAudio:function(){return A;},revs:revs,
@@ -5717,6 +5911,26 @@ if(location.search.indexOf('debug')>=0){
       return {kmh:Math.round(S.v.length()*3.6), grounded:S.grounded};
     }};
 }
+
+
+/* Preload the models behind the title screen, then rebuild whatever is on
+   screen so the hand built version is replaced in place. Called ONCE, here at
+   the end of boot: anchored on the first `requestAnimationFrame(frame)` it
+   landed inside frame() itself and started 55 fetches every frame, which
+   saturated the connection pool so nothing ever finished loading. */
+MDL.load(function(){
+  /* Do not swallow this. An exception here leaves bodyG emptied and the truck
+     invisible, which is a worse failure than a missing model. */
+  try{
+    window.__setVehicle(VEH);
+    if(typeof rebuildAssetProps==='function') rebuildAssetProps();
+  }catch(e){
+    window.__mdlError=(e && e.stack) || String(e);
+    if(window.console) console.error('asset swap failed:', e);
+    MDL.disable();
+    try{ window.__setVehicle(VEH); }catch(_){}
+  }
+});
 
 requestAnimationFrame(frame);
 

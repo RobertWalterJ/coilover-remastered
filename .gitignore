@@ -16,3 +16,7 @@ __pycache__/
 *.pyc
 .DS_Store
 Thumbs.db
+
+# The remaster's source assets live in Code Projects\Coilover-remastered; only
+# the ones the game actually loads are copied into app/ and committed.
+src/_check.js

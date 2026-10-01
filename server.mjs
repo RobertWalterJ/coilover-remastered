@@ -16,6 +16,7 @@ const TYPES = {
   '.webmanifest': 'application/manifest+json',
   '.css': 'text/css; charset=utf-8',
   '.png': 'image/png',
+  '.glb': 'model/gltf-binary',
   '.svg': 'image/svg+xml',
 };
 
