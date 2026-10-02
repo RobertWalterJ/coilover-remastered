@@ -1239,6 +1239,11 @@ var terrainMat, terrainMesh=null;
 /* texels of about 7.5 cm, so 128 of them span roughly 12 m of world */
 GRAIN_TEX=grainTex(128,7,0.55,6);
 var PAPER_TEX=grainTex(256,44,0.30,5);
+/* Declared HERE, not with its loader: buildTerrain runs during boot and is
+   1300 lines above it, so a hoisted `var TMAP` was undefined when the first
+   face asked for TMAP[MAP] and the whole page threw. */
+var TMAP={};
+
 function buildTerrain(){
   var N=Math.round(WORLD/GRID), V=N+1;
 
@@ -1262,6 +1267,7 @@ function buildTerrain(){
   var sw=new Float32Array(TRIS*6);       /* per face: how much lake, how much rock */
   var cLow=sc(PAL.low), cMid=sc(PAL.mid), cHigh=sc(PAL.high),
       cRock=sc(PAL.rock), cPlaya=sc(PAL.playa);
+  var TM=(TMAP[MAP] && TMAP[MAP]!=='loading')? TMAP[MAP] : null;
   var c=new THREE.Color(), t=0;
 
   function face(i0,i1,i2,fi){
@@ -1322,6 +1328,13 @@ function buildTerrain(){
     c.lerp(cPlaya, lakeMask(mx,mz));
     c.lerp(cRock, sstep(0.15,0.40,slope));
     }
+    /* The painted map wins where there is one. It was made from these same
+       height functions, so it agrees with the ground by construction instead
+       of by two sets of rules happening to land in the same place. */
+    if(TM && TM.colour){
+      var ci=tmapAt(TM,mx,mz), cd=TM.colour.data;
+      c.setRGB(cd[ci]/255, cd[ci+1]/255, cd[ci+2]/255).convertSRGBToLinear();
+    }
 
     /* Per face value step. On its own this used to be smoothed away by the
        continuous lighting, but the lighting is quantised now, so it survives.
@@ -1330,10 +1343,18 @@ function buildTerrain(){
     var hsh=hash2(Math.floor(mx*0.37)+fi*0.013, Math.floor(mz*0.37));
     var g=0.90+Math.round(hsh*4)/4*0.20;
 
-    var lkw=(MAP===1?panMask(mx,mz):(MAP===2?(1-sstep(0.94,1.06,shLakeD(mx,mz))):lakeMask(mx,mz)));
-    var rkw=(MAP===1? sstep(BUILD,BUILD+1.3,streetD(mx,mz))
-           : (MAP===2? Math.max(sstep(0.18,0.44,slope), sstep(0.32,0.68,shDome(mx,mz)))
-           : sstep(0.16,0.44,slope)));
+    var lkw, rkw;
+    if(TM && TM.surf){
+      /* R playa or lakebed, G bare rock. B is road or gravel and has no
+         sampler yet; grain/gravel_track_128.png is the one it wants. */
+      var si=tmapAt(TM,mx,mz), sd=TM.surf.data;
+      lkw=sd[si]/255; rkw=sd[si+1]/255;
+    }else{
+      lkw=(MAP===1?panMask(mx,mz):(MAP===2?(1-sstep(0.94,1.06,shLakeD(mx,mz))):lakeMask(mx,mz)));
+      rkw=(MAP===1? sstep(BUILD,BUILD+1.3,streetD(mx,mz))
+         : (MAP===2? Math.max(sstep(0.18,0.44,slope), sstep(0.32,0.68,shDome(mx,mz)))
+         : sstep(0.16,0.44,slope)));
+    }
     var so=t*6;
     sw[so]=lkw; sw[so+1]=rkw; sw[so+2]=lkw; sw[so+3]=rkw; sw[so+4]=lkw; sw[so+5]=rkw;
 
@@ -2867,6 +2888,40 @@ function applyAssetWheels(V){
       }
     }
   }
+}
+
+/* ---- step 7: the painted ground ----
+   561 by 561 at one metre a sample over a 560 m world, painted from the same
+   height functions the physics reads, so what is drawn and what is felt agree
+   by construction rather than by two sets of rules happening to match. */
+var TMAP_FILE={0:'desert', 1:'city', 2:'shield'};
+function loadTerrainMaps(i, done){
+  var id=TMAP_FILE[i];
+  if(!id || TMAP[i]) { done && done(); return; }
+  TMAP[i]='loading';
+  var got=0, out={};
+  ['colour','surf'].forEach(function(which){
+    var im=new Image();
+    im.onload=function(){
+      var cv=document.createElement('canvas');
+      cv.width=im.width; cv.height=im.height;
+      var cx=cv.getContext('2d');
+      cx.drawImage(im,0,0);
+      out[which]=cx.getImageData(0,0,im.width,im.height);
+      out.n=im.width;
+      if(++got===2){ TMAP[i]=out; done && done(); }
+    };
+    im.onerror=function(){ if(++got===2){ TMAP[i]=(out.colour||out.surf)? out : null; done && done(); } };
+    im.src='assets/terrain/'+id+'/'+which+'_1m.png';
+  });
+}
+/* world metres to a sample, clamped at the edges */
+function tmapAt(T, x, z){
+  var n=T.n, half=n*0.5;
+  var cx=Math.round(x+half), cy=Math.round(z+half);
+  if(cx<0) cx=0; else if(cx>=n) cx=n-1;
+  if(cy<0) cy=0; else if(cy>=n) cy=n-1;
+  return (cy*n+cx)*4;
 }
 
 /* ================= assets =================
@@ -5980,6 +6035,7 @@ function setMap(i){
   /* the props for this map have just been built, so swap in their models */
   if(typeof rebuildAssetProps==='function') rebuildAssetProps();
   if(typeof addRoads==='function') addRoads(i);
+  loadTerrainMaps(i, function(){ buildTerrain(); });
   rebuildLightPts();
   var st=MAPS[i].start;
   placeTruck(st[0],st[1],st[2]);
@@ -6208,6 +6264,8 @@ MDL.load(function(){
        after it, so that map has to be built again rather than patched */
     if(MAP===1 && typeof buildCityProps==='function'){ buildCityProps(); rebuildLightPts(); }
     if(typeof addRoads==='function') addRoads(MAP);
+    /* the painted ground, then one rebuild to use it */
+    loadTerrainMaps(MAP, function(){ buildTerrain(); });
   }catch(e){
     window.__mdlError=(e && e.stack) || String(e);
     if(window.console) console.error('asset swap failed:', e);
