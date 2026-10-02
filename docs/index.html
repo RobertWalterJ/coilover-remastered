@@ -904,6 +904,9 @@ for(var _s=0;_s<SURF.length;_s++) SURF[_s].b=Math.tan(Math.PI/(2*SURF[_s].c))/SU
 
 function surfaceAt(x,z,slope){
   if(MAP===2){
+    /* a bridge over a lake is gravel, not lake: without this the truck feels
+       like it is wading the whole way across */
+    if(deckAt(x,z)>height(x,z)) return 10;
     if(shLakeD(x,z)<1.00) return 11;                  /* in the water */
     if(shRoadD(x,z)<5.6)  return 10;                  /* the logging road */
     if(shEskerD(x,z)<11)  return 10;                  /* and the esker is gravel */
@@ -1206,6 +1209,46 @@ var MAPS=[
 var MAP=0;
 
 var PAD_Y=0;
+/* ---- step 8: the bridge decks ----
+   The drivable top of each crossing, rasterised at one metre from the
+   centreline polylines in bridges.json. Read by envHeight, normalAt and
+   surfaceAt, and NOT by height(), which is what the terrain mesh is built
+   from. See src/dressing.py. */
+var DECK=null, DECK_N=561, DECK_HALF=280.5;
+function deckAt(x,z){
+  if(!DECK) return -1e9;
+  var cx=Math.round(x+DECK_HALF), cy=Math.round(z+DECK_HALF);
+  if(cx<0||cy<0||cx>=DECK_N||cy>=DECK_N) return -1e9;
+  return DECK[cy*DECK_N+cx];
+}
+function buildDeckMask(list){
+  var D=new Float32Array(DECK_N*DECK_N);
+  D.fill(-1e9);
+  for(var b=0;b<list.length;b++){
+    var B=list[b], pts=B.pts||[], hw=(B.width||6)*0.5;
+    /* the planks sit a little above the quoted deck line */
+    var y=(B.deck_y||0)+0.15;
+    for(var i=0;i+1<pts.length;i++){
+      var x0=pts[i][0], z0=pts[i][1], x1=pts[i+1][0], z1=pts[i+1][1];
+      var dx=x1-x0, dz=z1-z0, L=Math.sqrt(dx*dx+dz*dz);
+      if(L<1e-6) continue;
+      var ux=dx/L, uz=dz/L, nx=-uz, nz=ux;
+      var ns=Math.ceil(L/0.5), nu=Math.ceil(hw/0.5);
+      for(var a=0;a<=ns;a++){
+        var t=a/ns, px=x0+dx*t, pz=z0+dz*t;
+        for(var u=-nu;u<=nu;u++){
+          var w=u*0.5, qx=px+nx*w, qz=pz+nz*w;
+          var cx=Math.round(qx+DECK_HALF), cy=Math.round(qz+DECK_HALF);
+          if(cx<0||cy<0||cx>=DECK_N||cy>=DECK_N) continue;
+          var k=cy*DECK_N+cx;
+          if(y>D[k]) D[k]=y;
+        }
+      }
+    }
+  }
+  DECK=D;
+}
+
 function height(x,z){
   if(MAP===1) return baseHCity(x,z);
   if(MAP===2) return baseHShield(x,z);
@@ -1225,11 +1268,17 @@ function envHeight(px,pz,fx,fz,rx,rz){
   var c=height(px+rx*0.13,pz+rz*0.13), d=height(px-rx*0.13,pz-rz*0.13);
   var mx=Math.max(h0,Math.max(Math.max(a,b),Math.max(c,d)));
   var mean=(h0+a+b+c+d)*0.2;
-  return mx*0.68+mean*0.32;
+  var h=mx*0.68+mean*0.32;
+  /* a deck is flat and above whatever it crosses, so one sample settles it */
+  var dk=deckAt(px,pz);
+  return dk>h? dk : h;
 }
 
 function normalAt(x,z,out){
   var e=0.85;
+  /* on a deck the lake bed below is irrelevant, and sampling it would tip the
+     truck sideways over open water */
+  if(deckAt(x,z)>height(x,z)) return out.set(0,1,0);
   out.set(height(x-e,z)-height(x+e,z), 2*e, height(x,z-e)-height(x,z+e));
   return out.normalize();
 }
@@ -2740,6 +2789,130 @@ function clearBuilt(g, spare){
   }
 }
 
+/* ---- step 8: the Pike Narrows bridges ----
+   Already placed in world coordinates by the pack, so this is a load, an add
+   and the deck mask the physics reads. */
+var BRIDGE_FILE={2:{glb:'bridges/bridges_pike_narrows.glb',
+                    list:'terrain/shield/bridges.json'}};
+var BRIDGE_GROUP={};
+function addBridges(i){
+  if(typeof MDL==='undefined' || !MDL.ready()) return;
+  var F=BRIDGE_FILE[i];
+  if(!F){ DECK=null; return; }
+  if(BRIDGE_GROUP[i]){
+    /* standing already; the mask belongs to this map, so put it back */
+    if(BRIDGE_GROUP[i].userData.deck) DECK=BRIDGE_GROUP[i].userData.deck;
+    return;
+  }
+  var key='bridges/'+i;
+  BRIDGE_GROUP[i]='loading';
+  MDL.loadOne(key, F.glb, function(ok){
+    if(!ok){ BRIDGE_GROUP[i]=null; return; }
+    var r=MDL.get(key,{tex:'rock'});
+    if(!r){ BRIDGE_GROUP[i]=null; return; }
+    r.traverse(function(o){
+      if(!o.isMesh) return;
+      o.castShadow=true; o.receiveShadow=true;
+    });
+    mapGroup(i).add(r);
+    BRIDGE_GROUP[i]=r;
+    fetch('assets/'+F.list).then(function(x){ return x.json(); }).then(function(list){
+      buildDeckMask(list);
+      r.userData.deck=DECK;
+      if(MAP!==i) DECK=null;         /* the player moved on while this loaded */
+    }).catch(function(e){ if(DEBUG && window.console) console.error('bridges', e); });
+  });
+}
+
+/* ---- step 8: the desert circuit's set dressing ----
+   12 numbered boards and 47 tyre stacks, from set_dressing_desert.json. */
+var DRESS_GROUP={}, DRESS_SNOW=[];
+var DRESS_FILE={0:'terrain/desert/set_dressing_desert.json'};
+function addDressing(i){
+  if(typeof MDL==='undefined' || !MDL.ready()) return;
+  var file=DRESS_FILE[i]; if(!file || DRESS_GROUP[i]) return;
+  if(!MDL.has('props/desert/tyre_stack') || !MDL.has('props/desert/gate_board')) return;
+  DRESS_GROUP[i]='loading';
+  fetch('assets/'+file).then(function(r){ return r.json(); }).then(function(list){
+    /* `height()` branches on MAP, and this arrived asynchronously, so if the
+       player has moved on every stack would be set to the wrong map's ground.
+       Drop it and build again when this map next comes round. */
+    if(MAP!==i){ DRESS_GROUP[i]=null; return; }
+    var grp=new THREE.Group(), q, e;
+
+    /* the tyre stacks: all the same, so two instanced meshes and done */
+    var stacks=[];
+    for(q=0;q<list.length;q++) if(list[q].kind==='tyre_stack') stacks.push(list[q]);
+    if(stacks.length){
+      var proto=MDL.get('props/desert/tyre_stack',{tex:'rock'});
+      proto.updateMatrixWorld(true);
+      var d5=new THREE.Object3D();
+      proto.traverse(function(o){
+        if(!o.isMesh) return;
+        var snowy=/_snow/.test(o.name) || (o.parent && /_snow$/.test(o.parent.name));
+        var g=o.geometry.clone(); g.applyMatrix4(o.matrixWorld);
+        var im=new THREE.InstancedMesh(g, o.material, stacks.length);
+        im.castShadow=true; im.receiveShadow=true;
+        for(var k=0;k<stacks.length;k++){
+          var t=stacks[k];
+          d5.position.set(t.x, height(t.x,t.z), t.z);
+          d5.rotation.set(0, t.yaw||0, 0);
+          d5.scale.setScalar(1);
+          d5.updateMatrix();
+          im.setMatrixAt(k, d5.matrix);
+        }
+        im.instanceMatrix.needsUpdate=true;
+        g.computeBoundingSphere();
+        im.frustumCulled=false;      /* 47 stacks, 512 tris each: not worth it */
+        if(snowy){ im.visible=!!FLORA.snow; DRESS_SNOW.push(im); }
+        grp.add(im);
+      });
+    }
+
+    /* the boards: each carries its own number, so each needs its own
+       material, and twelve objects is cheaper than the machinery to avoid
+       them */
+    for(q=0;q<list.length;q++){
+      e=list[q];
+      if(e.kind!=='gate_board') continue;
+      var b=MDL.get('props/desert/gate_board',{tex:'rock'});
+      if(!b) break;
+      b.position.set(e.x, height(e.x,e.z), e.z);
+      b.rotation.y=e.yaw||0;
+      (function(num){
+        b.traverse(function(o){
+          if(!o.isMesh) return;
+          o.castShadow=true; o.receiveShadow=true;
+          if(/_snow$/.test(o.name) || (o.parent && /_snow$/.test(o.parent.name))){
+            o.visible=!!FLORA.snow; DRESS_SNOW.push(o);
+          }
+          if(o.material && o.material.name==='gateboard'){
+            var m=o.material.clone();
+            m.map=paintedFace(192,128,function(x,W,H){
+              x.fillStyle='#efe4cf'; x.fillRect(0,0,W,H);
+              x.strokeStyle='#b8360f'; x.lineWidth=7;
+              x.strokeRect(10,10,W-20,H-20);
+              x.fillStyle='#2b2320';
+              x.font='bold 86px Helvetica, Arial, sans-serif';
+              x.textAlign='center'; x.textBaseline='middle';
+              x.fillText(String(num), W/2, H/2+4);
+            });
+            m.color.setRGB(1,1,1);     /* the paint carries the colour now */
+            o.material=m;
+          }
+        });
+      })(e.n);
+      grp.add(b);
+    }
+
+    mapGroup(i).add(grp);
+    DRESS_GROUP[i]=grp;
+  }).catch(function(e){
+    DRESS_GROUP[i]=null;
+    if(DEBUG && window.console) console.error('dressing', e);
+  });
+}
+
 /* ---- step 8: flora ----------------------------------------------------
    One InstancedMesh per variant, per layer, per weather role, filled from the
    dress list with whatever is inside the radius. See src/flora.py. */
@@ -2935,6 +3108,7 @@ function floraSnow(on){
   on=!!on;
   if(on===FLORA.snow) return;
   FLORA.snow=on; updateFlora(true);
+  for(var d=0;d<DRESS_SNOW.length;d++) DRESS_SNOW[d].visible=on;
 }
 
 var _fd=new THREE.Object3D(), _fv=new THREE.Vector3();
@@ -6307,6 +6481,8 @@ function setMap(i){
   if(typeof rebuildAssetProps==='function') rebuildAssetProps();
   if(typeof addRoads==='function') addRoads(i);
   if(typeof buildFlora==='function') buildFlora(i);
+  if(typeof addBridges==='function') addBridges(i);
+  if(typeof addDressing==='function') addDressing(i);
   loadTerrainMaps(i, function(){ buildTerrain(); });
   rebuildLightPts();
   var st=MAPS[i].start;
@@ -6473,6 +6649,7 @@ sync(0); updateCam(0.016); hud(0);
 
 if(location.search.indexOf('debug')>=0){
   window.coilover={MDL:MDL,S:S,corners:corners,camera:camera,height:height,GATES:GATES,
+    deckAt:deckAt,envHeight:envHeight,surfaceAt:surfaceAt,
     place:placeTruck,LANDMARKS:LANDMARKS,PROG:PROG,STONES:STONES,KICKERS:KICKERS,
     TOD:TOD,TIMES:TIMES,applyTime:applyTime,drawMap:drawMap,IN:IN,
     audioOn:audioOn,getAudio:function(){return A;},revs:revs,
@@ -6537,6 +6714,8 @@ MDL.load(function(){
     if(MAP===1 && typeof buildCityProps==='function'){ buildCityProps(); rebuildLightPts(); }
     if(typeof addRoads==='function') addRoads(MAP);
     if(typeof buildFlora==='function') buildFlora(MAP);
+    if(typeof addBridges==='function') addBridges(MAP);
+    if(typeof addDressing==='function') addDressing(MAP);
     /* the painted ground, then one rebuild to use it */
     loadTerrainMaps(MAP, function(){ buildTerrain(); });
   }catch(e){
