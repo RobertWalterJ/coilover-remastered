@@ -1,0 +1,908 @@
+{
+ "juniper_0": {
+  "kind": "juniper",
+  "nodes": [
+   "juniper_0",
+   "juniper_0_snow",
+   "juniper_0_main"
+  ],
+  "tris": 516,
+  "size_m_xyz_blender": [
+   3.99,
+   3.68,
+   3.78
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "juniper_1": {
+  "kind": "juniper",
+  "nodes": [
+   "juniper_1",
+   "juniper_1_snow",
+   "juniper_1_main"
+  ],
+  "tris": 520,
+  "size_m_xyz_blender": [
+   4.26,
+   3.73,
+   4.17
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "juniper_2": {
+  "kind": "juniper",
+  "nodes": [
+   "juniper_2",
+   "juniper_2_snow",
+   "juniper_2_main"
+  ],
+  "tris": 480,
+  "size_m_xyz_blender": [
+   4.11,
+   4.11,
+   4.49
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "juniper_3": {
+  "kind": "juniper",
+  "nodes": [
+   "juniper_3",
+   "juniper_3_snow",
+   "juniper_3_main"
+  ],
+  "tris": 488,
+  "size_m_xyz_blender": [
+   3.64,
+   4.36,
+   4.45
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "spiketree_0": {
+  "kind": "spiketree",
+  "nodes": [
+   "spiketree_0",
+   "spiketree_0_snow",
+   "spiketree_0_main"
+  ],
+  "tris": 412,
+  "size_m_xyz_blender": [
+   1.05,
+   0.95,
+   1.89
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "spiketree_1": {
+  "kind": "spiketree",
+  "nodes": [
+   "spiketree_1",
+   "spiketree_1_snow",
+   "spiketree_1_main"
+  ],
+  "tris": 1160,
+  "size_m_xyz_blender": [
+   3.43,
+   1.36,
+   5.21
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "spiketree_2": {
+  "kind": "spiketree",
+  "nodes": [
+   "spiketree_2",
+   "spiketree_2_snow",
+   "spiketree_2_main"
+  ],
+  "tris": 1696,
+  "size_m_xyz_blender": [
+   4.67,
+   1.75,
+   4.74
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "spiketree_3": {
+  "kind": "spiketree",
+  "nodes": [
+   "spiketree_3",
+   "spiketree_3_snow",
+   "spiketree_3_main"
+  ],
+  "tris": 1292,
+  "size_m_xyz_blender": [
+   2.93,
+   1.86,
+   4.51
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "saguaro_0": {
+  "kind": "saguaro",
+  "nodes": [
+   "saguaro_0",
+   "saguaro_0_snow",
+   "saguaro_0_main"
+  ],
+  "tris": 500,
+  "size_m_xyz_blender": [
+   1.28,
+   1.28,
+   8.21
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "saguaro_1": {
+  "kind": "saguaro",
+  "nodes": [
+   "saguaro_1",
+   "saguaro_1_snow",
+   "saguaro_1_main"
+  ],
+  "tris": 500,
+  "size_m_xyz_blender": [
+   1.61,
+   1.14,
+   5.39
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "saguaro_2": {
+  "kind": "saguaro",
+  "nodes": [
+   "saguaro_2",
+   "saguaro_2_snow",
+   "saguaro_2_main"
+  ],
+  "tris": 500,
+  "size_m_xyz_blender": [
+   1.28,
+   1.4,
+   6.45
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "saguaro_3": {
+  "kind": "saguaro",
+  "nodes": [
+   "saguaro_3",
+   "saguaro_3_snow",
+   "saguaro_3_main"
+  ],
+  "tris": 212,
+  "size_m_xyz_blender": [
+   0.61,
+   0.64,
+   6.43
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "barrel_0": {
+  "kind": "barrel",
+  "nodes": [
+   "barrel_0",
+   "barrel_0_snow",
+   "barrel_0_main"
+  ],
+  "tris": 160,
+  "size_m_xyz_blender": [
+   0.8,
+   0.8,
+   1.21
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "barrel_1": {
+  "kind": "barrel",
+  "nodes": [
+   "barrel_1",
+   "barrel_1_snow",
+   "barrel_1_main"
+  ],
+  "tris": 160,
+  "size_m_xyz_blender": [
+   0.82,
+   0.83,
+   1.25
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "barrel_2": {
+  "kind": "barrel",
+  "nodes": [
+   "barrel_2",
+   "barrel_2_snow",
+   "barrel_2_main"
+  ],
+  "tris": 160,
+  "size_m_xyz_blender": [
+   0.85,
+   0.79,
+   1.26
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "prickly_pear_0": {
+  "kind": "prickly_pear",
+  "nodes": [
+   "prickly_pear_0",
+   "prickly_pear_0_snow",
+   "prickly_pear_0_main"
+  ],
+  "tris": 320,
+  "size_m_xyz_blender": [
+   1.24,
+   1.85,
+   2.7
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "prickly_pear_1": {
+  "kind": "prickly_pear",
+  "nodes": [
+   "prickly_pear_1",
+   "prickly_pear_1_snow",
+   "prickly_pear_1_main"
+  ],
+  "tris": 80,
+  "size_m_xyz_blender": [
+   0.21,
+   0.77,
+   1.49
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "prickly_pear_2": {
+  "kind": "prickly_pear",
+  "nodes": [
+   "prickly_pear_2",
+   "prickly_pear_2_snow",
+   "prickly_pear_2_main"
+  ],
+  "tris": 228,
+  "size_m_xyz_blender": [
+   1.22,
+   1.35,
+   2.74
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "ocotillo_0": {
+  "kind": "ocotillo",
+  "nodes": [
+   "ocotillo_0",
+   "ocotillo_0_main"
+  ],
+  "tris": 480,
+  "size_m_xyz_blender": [
+   2.33,
+   2.69,
+   3.99
+  ],
+  "layers": [
+   "main"
+  ]
+ },
+ "ocotillo_1": {
+  "kind": "ocotillo",
+  "nodes": [
+   "ocotillo_1",
+   "ocotillo_1_main"
+  ],
+  "tris": 448,
+  "size_m_xyz_blender": [
+   2.53,
+   2.8,
+   4.22
+  ],
+  "layers": [
+   "main"
+  ]
+ },
+ "ocotillo_2": {
+  "kind": "ocotillo",
+  "nodes": [
+   "ocotillo_2",
+   "ocotillo_2_main"
+  ],
+  "tris": 480,
+  "size_m_xyz_blender": [
+   2.8,
+   3.07,
+   4.4
+  ],
+  "layers": [
+   "main"
+  ]
+ },
+ "sage_0": {
+  "kind": "sage",
+  "nodes": [
+   "sage_0",
+   "sage_0_snow",
+   "sage_0_main"
+  ],
+  "tris": 260,
+  "size_m_xyz_blender": [
+   1.8,
+   1.62,
+   0.88
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "sage_1": {
+  "kind": "sage",
+  "nodes": [
+   "sage_1",
+   "sage_1_snow",
+   "sage_1_main"
+  ],
+  "tris": 272,
+  "size_m_xyz_blender": [
+   1.72,
+   1.55,
+   0.81
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "sage_2": {
+  "kind": "sage",
+  "nodes": [
+   "sage_2",
+   "sage_2_snow",
+   "sage_2_main"
+  ],
+  "tris": 280,
+  "size_m_xyz_blender": [
+   1.8,
+   1.38,
+   0.93
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "sage_3": {
+  "kind": "sage",
+  "nodes": [
+   "sage_3",
+   "sage_3_snow",
+   "sage_3_main"
+  ],
+  "tris": 332,
+  "size_m_xyz_blender": [
+   1.49,
+   1.54,
+   0.71
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "creosote_0": {
+  "kind": "creosote",
+  "nodes": [
+   "creosote_0",
+   "creosote_0_snow",
+   "creosote_0_main"
+  ],
+  "tris": 324,
+  "size_m_xyz_blender": [
+   1.56,
+   1.47,
+   2.01
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "creosote_1": {
+  "kind": "creosote",
+  "nodes": [
+   "creosote_1",
+   "creosote_1_snow",
+   "creosote_1_main"
+  ],
+  "tris": 544,
+  "size_m_xyz_blender": [
+   1.57,
+   1.65,
+   1.97
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "creosote_2": {
+  "kind": "creosote",
+  "nodes": [
+   "creosote_2",
+   "creosote_2_snow",
+   "creosote_2_main"
+  ],
+  "tris": 540,
+  "size_m_xyz_blender": [
+   1.43,
+   1.76,
+   1.98
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "tumbleweed_0": {
+  "kind": "tumbleweed",
+  "nodes": [
+   "tumbleweed_0",
+   "tumbleweed_0_snow",
+   "tumbleweed_0_main"
+  ],
+  "tris": 568,
+  "size_m_xyz_blender": [
+   0.87,
+   0.88,
+   0.91
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "tumbleweed_1": {
+  "kind": "tumbleweed",
+  "nodes": [
+   "tumbleweed_1",
+   "tumbleweed_1_snow",
+   "tumbleweed_1_main"
+  ],
+  "tris": 548,
+  "size_m_xyz_blender": [
+   0.9,
+   0.88,
+   0.87
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "deadwood_0": {
+  "kind": "deadwood",
+  "nodes": [
+   "deadwood_0",
+   "deadwood_0_snow",
+   "deadwood_0_main"
+  ],
+  "tris": 312,
+  "size_m_xyz_blender": [
+   3.1,
+   0.74,
+   3.46
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "deadwood_1": {
+  "kind": "deadwood",
+  "nodes": [
+   "deadwood_1",
+   "deadwood_1_snow",
+   "deadwood_1_main"
+  ],
+  "tris": 280,
+  "size_m_xyz_blender": [
+   2.84,
+   1.01,
+   3.51
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "deadwood_2": {
+  "kind": "deadwood",
+  "nodes": [
+   "deadwood_2",
+   "deadwood_2_snow",
+   "deadwood_2_main"
+  ],
+  "tris": 172,
+  "size_m_xyz_blender": [
+   1.8,
+   1.36,
+   3.69
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "dry_grass_0": {
+  "kind": "dry_grass",
+  "nodes": [
+   "dry_grass_0",
+   "dry_grass_0_main"
+  ],
+  "tris": 30,
+  "size_m_xyz_blender": [
+   0.43,
+   0.48,
+   0.4
+  ],
+  "layers": [
+   "main"
+  ]
+ },
+ "dry_grass_1": {
+  "kind": "dry_grass",
+  "nodes": [
+   "dry_grass_1",
+   "dry_grass_1_main"
+  ],
+  "tris": 22,
+  "size_m_xyz_blender": [
+   0.61,
+   0.41,
+   0.52
+  ],
+  "layers": [
+   "main"
+  ]
+ },
+ "dry_grass_2": {
+  "kind": "dry_grass",
+  "nodes": [
+   "dry_grass_2",
+   "dry_grass_2_main"
+  ],
+  "tris": 28,
+  "size_m_xyz_blender": [
+   0.56,
+   0.55,
+   0.46
+  ],
+  "layers": [
+   "main"
+  ]
+ },
+ "sandstone_0": {
+  "kind": "sandstone",
+  "nodes": [
+   "sandstone_0",
+   "sandstone_0_snow",
+   "sandstone_0_main"
+  ],
+  "tris": 464,
+  "size_m_xyz_blender": [
+   2.51,
+   2.25,
+   1.66
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "sandstone_1": {
+  "kind": "sandstone",
+  "nodes": [
+   "sandstone_1",
+   "sandstone_1_snow",
+   "sandstone_1_main"
+  ],
+  "tris": 368,
+  "size_m_xyz_blender": [
+   6.04,
+   4.58,
+   2.92
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "sandstone_2": {
+  "kind": "sandstone",
+  "nodes": [
+   "sandstone_2",
+   "sandstone_2_snow",
+   "sandstone_2_main"
+  ],
+  "tris": 396,
+  "size_m_xyz_blender": [
+   4.5,
+   3.84,
+   3.1
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "sandstone_3": {
+  "kind": "sandstone",
+  "nodes": [
+   "sandstone_3",
+   "sandstone_3_snow",
+   "sandstone_3_main"
+  ],
+  "tris": 380,
+  "size_m_xyz_blender": [
+   4.91,
+   3.63,
+   3.22
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "sandstone_4": {
+  "kind": "sandstone",
+  "nodes": [
+   "sandstone_4",
+   "sandstone_4_snow",
+   "sandstone_4_main"
+  ],
+  "tris": 412,
+  "size_m_xyz_blender": [
+   3.5,
+   2.95,
+   2.08
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "sandstone_5": {
+  "kind": "sandstone",
+  "nodes": [
+   "sandstone_5",
+   "sandstone_5_snow",
+   "sandstone_5_main"
+  ],
+  "tris": 412,
+  "size_m_xyz_blender": [
+   5.9,
+   4.99,
+   3.31
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "hoodoo_0": {
+  "kind": "hoodoo",
+  "nodes": [
+   "hoodoo_0",
+   "hoodoo_0_snow",
+   "hoodoo_0_main"
+  ],
+  "tris": 292,
+  "size_m_xyz_blender": [
+   2.53,
+   2.45,
+   6.97
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "hoodoo_1": {
+  "kind": "hoodoo",
+  "nodes": [
+   "hoodoo_1",
+   "hoodoo_1_snow",
+   "hoodoo_1_main"
+  ],
+  "tris": 248,
+  "size_m_xyz_blender": [
+   2.43,
+   2.35,
+   9.3
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "hoodoo_2": {
+  "kind": "hoodoo",
+  "nodes": [
+   "hoodoo_2",
+   "hoodoo_2_snow",
+   "hoodoo_2_main"
+  ],
+  "tris": 288,
+  "size_m_xyz_blender": [
+   2.57,
+   2.48,
+   6.4
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "hoodoo_3": {
+  "kind": "hoodoo",
+  "nodes": [
+   "hoodoo_3",
+   "hoodoo_3_snow",
+   "hoodoo_3_main"
+  ],
+  "tris": 380,
+  "size_m_xyz_blender": [
+   2.57,
+   2.38,
+   7.65
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "slab_0": {
+  "kind": "slab",
+  "nodes": [
+   "slab_0",
+   "slab_0_snow",
+   "slab_0_main"
+  ],
+  "tris": 176,
+  "size_m_xyz_blender": [
+   2.42,
+   2.67,
+   0.92
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "slab_1": {
+  "kind": "slab",
+  "nodes": [
+   "slab_1",
+   "slab_1_snow",
+   "slab_1_main"
+  ],
+  "tris": 264,
+  "size_m_xyz_blender": [
+   3.59,
+   3.5,
+   1.2
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "slab_2": {
+  "kind": "slab",
+  "nodes": [
+   "slab_2",
+   "slab_2_snow",
+   "slab_2_main"
+  ],
+  "tris": 352,
+  "size_m_xyz_blender": [
+   3.33,
+   4.26,
+   1.71
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "scree_0": {
+  "kind": "scree",
+  "nodes": [
+   "scree_0",
+   "scree_0_snow",
+   "scree_0_main"
+  ],
+  "tris": 712,
+  "size_m_xyz_blender": [
+   4.25,
+   3.38,
+   0.95
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "scree_1": {
+  "kind": "scree",
+  "nodes": [
+   "scree_1",
+   "scree_1_snow",
+   "scree_1_main"
+  ],
+  "tris": 884,
+  "size_m_xyz_blender": [
+   4.89,
+   2.42,
+   0.93
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ }
+}

@@ -1,0 +1,309 @@
+{
+ "states": {
+  "sunny": {
+   "light": {
+    "sun": 1.0,
+    "ambient": 1.0,
+    "fog": 1.0,
+    "sky": "#ffffff",
+    "wind": 0.4
+   },
+   "roles": {}
+  },
+  "overcast": {
+   "light": {
+    "sun": 0.35,
+    "ambient": 1.15,
+    "fog": 1.6,
+    "sky": "#b9c0c6",
+    "wind": 0.6
+   },
+   "roles": {
+    "foliage_evergreen": {
+     "mul": 0.92
+    },
+    "foliage_deciduous": {
+     "mul": 0.94
+    },
+    "grass": {
+     "mul": 0.95
+    }
+   }
+  },
+  "rain": {
+   "light": {
+    "sun": 0.22,
+    "ambient": 0.95,
+    "fog": 2.4,
+    "sky": "#8e979e",
+    "wind": 0.9,
+    "rain": 0.7
+   },
+   "puddles": true,
+   "roles": {
+    "rock": {
+     "mul": 0.62,
+     "rough": 0.35,
+     "tint": "#3a4652",
+     "tintAmt": 0.08
+    },
+    "soil": {
+     "mul": 0.55,
+     "rough": 0.35,
+     "tint": "#3a4652",
+     "tintAmt": 0.08
+    },
+    "sand": {
+     "mul": 0.7,
+     "rough": 0.35,
+     "tint": "#3a4652",
+     "tintAmt": 0.08
+    },
+    "asphalt": {
+     "mul": 0.55,
+     "rough": 0.25,
+     "tint": "#3a4652",
+     "tintAmt": 0.08
+    },
+    "concrete": {
+     "mul": 0.62,
+     "rough": 0.35,
+     "tint": "#3a4652",
+     "tintAmt": 0.08
+    },
+    "wood": {
+     "mul": 0.6,
+     "rough": 0.35,
+     "tint": "#3a4652",
+     "tintAmt": 0.08
+    },
+    "bark": {
+     "mul": 0.55,
+     "rough": 0.35,
+     "tint": "#3a4652",
+     "tintAmt": 0.08
+    },
+    "metal": {
+     "rough": 0.5
+    },
+    "paint": {
+     "rough": 0.45
+    },
+    "foliage_evergreen": {
+     "mul": 0.85,
+     "rough": 0.6
+    },
+    "foliage_deciduous": {
+     "mul": 0.88,
+     "rough": 0.6
+    },
+    "grass": {
+     "mul": 0.82
+    }
+   }
+  },
+  "storm": {
+   "light": {
+    "sun": 0.1,
+    "ambient": 0.75,
+    "fog": 3.2,
+    "sky": "#6c747c",
+    "wind": 1.6,
+    "rain": 1.0
+   },
+   "puddles": true,
+   "roles": {
+    "rock": {
+     "mul": 0.62,
+     "rough": 0.35,
+     "tint": "#3a4652",
+     "tintAmt": 0.08
+    },
+    "soil": {
+     "mul": 0.55,
+     "rough": 0.35,
+     "tint": "#3a4652",
+     "tintAmt": 0.08
+    },
+    "sand": {
+     "mul": 0.7,
+     "rough": 0.35,
+     "tint": "#3a4652",
+     "tintAmt": 0.08
+    },
+    "asphalt": {
+     "mul": 0.55,
+     "rough": 0.25,
+     "tint": "#3a4652",
+     "tintAmt": 0.08
+    },
+    "concrete": {
+     "mul": 0.62,
+     "rough": 0.35,
+     "tint": "#3a4652",
+     "tintAmt": 0.08
+    },
+    "wood": {
+     "mul": 0.6,
+     "rough": 0.35,
+     "tint": "#3a4652",
+     "tintAmt": 0.08
+    },
+    "bark": {
+     "mul": 0.55,
+     "rough": 0.35,
+     "tint": "#3a4652",
+     "tintAmt": 0.08
+    },
+    "metal": {
+     "rough": 0.5
+    },
+    "paint": {
+     "rough": 0.45
+    },
+    "foliage_evergreen": {
+     "mul": 0.85,
+     "rough": 0.6
+    },
+    "foliage_deciduous": {
+     "mul": 0.88,
+     "rough": 0.6
+    },
+    "grass": {
+     "mul": 0.82
+    }
+   }
+  },
+  "snow": {
+   "light": {
+    "sun": 0.55,
+    "ambient": 1.25,
+    "fog": 2.0,
+    "sky": "#d9e1e8",
+    "wind": 0.7,
+    "snowfall": 0.7
+   },
+   "leafless": true,
+   "roles": {
+    "rock": {
+     "snow": 0.85,
+     "mul": 0.9
+    },
+    "soil": {
+     "snow": 1.0
+    },
+    "sand": {
+     "snow": 1.0
+    },
+    "grass": {
+     "snow": 1.0,
+     "tint": "#c9d3d8",
+     "tintAmt": 0.6
+    },
+    "asphalt": {
+     "snow": 0.35,
+     "mul": 0.9
+    },
+    "concrete": {
+     "snow": 0.7
+    },
+    "wood": {
+     "snow": 0.9
+    },
+    "bark": {
+     "snow": 0.4
+    },
+    "foliage_evergreen": {
+     "snow": 0.6,
+     "mul": 0.8
+    },
+    "foliage_deciduous": {
+     "snow": 0.6,
+     "tint": "#8a7a5a",
+     "tintAmt": 0.5
+    },
+    "metal": {
+     "snow": 0.6
+    },
+    "paint": {
+     "snow": 0.6
+    },
+    "water": {
+     "tint": "#c8d6dc",
+     "tintAmt": 0.75,
+     "rough": 2.0
+    }
+   }
+  },
+  "fog": {
+   "light": {
+    "sun": 0.3,
+    "ambient": 1.1,
+    "fog": 5.0,
+    "sky": "#c7cdd1",
+    "wind": 0.2
+   },
+   "roles": {
+    "rock": {
+     "mul": 0.95,
+     "rough": 0.8
+    },
+    "wood": {
+     "mul": 0.95
+    },
+    "asphalt": {
+     "mul": 0.9,
+     "rough": 0.7
+    }
+   }
+  },
+  "autumn": {
+   "light": {
+    "sun": 0.9,
+    "ambient": 1.0,
+    "fog": 1.2,
+    "sky": "#f4e6d4",
+    "wind": 0.7
+   },
+   "roles": {
+    "foliage_deciduous": {
+     "autumn": [
+      "#c4452e",
+      "#e07a2a",
+      "#e3b13a",
+      "#b8562e",
+      "#d99a3a"
+     ]
+    },
+    "grass": {
+     "tint": "#b49a5a",
+     "tintAmt": 0.55
+    },
+    "foliage_evergreen": {
+     "mul": 0.95
+    }
+   }
+  }
+ },
+ "roles": [
+  "foliage_evergreen",
+  "foliage_deciduous",
+  "bark",
+  "wood",
+  "rock",
+  "soil",
+  "sand",
+  "grass",
+  "metal",
+  "paint",
+  "glass",
+  "asphalt",
+  "concrete",
+  "water",
+  "snow",
+  "puddle",
+  "lit"
+ ],
+ "snowColor": "#eef3f6",
+ "notes": "mul multiplies albedo, rough multiplies roughness, snow is coverage on up-facing surfaces, tint/tintAmt lean the albedo, autumn picks one colour per instance or material, leafless hides *_leaves nodes, puddles shows *_puddles nodes."
+}

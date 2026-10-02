@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 """Build the two published copies from src/game.html, which is the source.
 
-  src/game.html  the Artifact copy: a fragment, three.js off a CDN
-  app/           the installable copy: full document, three.js vendored, PWA
-  docs/          the same thing again, because that is what GitHub Pages serves
+  src/game.html  the source: a fragment, three.js and the loader off a CDN
+  docs/          the built game: full document, three.js and GLTFLoader
+                 vendored, PWA head, service worker. This one folder is what
+                 GitHub Pages publishes AND what server.mjs serves locally.
 
-app/ and docs/ are byte for byte identical and both are generated. Edit
-src/game.html and run this; never edit either output by hand.
+There is deliberately only ONE build output. An earlier version wrote app/ and
+then copied it to docs/, which meant every 13 MB road mesh was committed
+twice and the two could drift. Edit src/game.html and run this.
 """
 import io, os, shutil
 
@@ -46,14 +48,8 @@ if('serviceWorker' in navigator) addEventListener('load',function(){
 </body>
 </html>
 ''')
-io.open('app/index.html', 'w', encoding='utf-8', newline='\n').write(doc)
-print('app/index.html written:', os.path.getsize('app/index.html'), 'bytes')
+io.open('docs/index.html', 'w', encoding='utf-8', newline='\n').write(doc)
+print('docs/index.html written:', os.path.getsize('docs/index.html'), 'bytes')
 
-# ---- and the copy GitHub Pages serves ---------------------------------------
-# Generated rather than committed twice by hand, so docs/ cannot drift from
-# app/ the way a copied folder always eventually does.
-if os.path.isdir('docs'):
-    shutil.rmtree('docs')
-shutil.copytree('app', 'docs')
-io.open('docs/.nojekyll', 'w').write('')     # Pages must not run Jekyll over it
-print('docs/ written from app/')
+# Pages must not run Jekyll over it (underscore-prefixed paths vanish if it does)
+io.open('docs/.nojekyll', 'w').write('')

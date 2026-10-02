@@ -1,5 +1,5 @@
 // Minimal static server for Coilover. No dependencies.
-// Serves /app on http://localhost:8797. localhost is a secure context, so the
+// Serves /docs on http://localhost:8797. Same folder GitHub Pages publishes. localhost is a secure context, so the
 // service worker registers and the game installs to the home screen from here.
 import { createServer } from 'node:http';
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join, normalize, extname } from 'node:path';
 import { networkInterfaces } from 'node:os';
 
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), 'app');
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), 'docs');
 const PORT = Number(process.env.PORT) || 8797;
 const TYPES = {
   '.html': 'text/html; charset=utf-8',

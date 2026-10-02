@@ -1,0 +1,1384 @@
+{
+ "spruce_0": {
+  "kind": "spruce",
+  "nodes": [
+   "spruce_0",
+   "spruce_0_snow",
+   "spruce_0_main"
+  ],
+  "tris": 358,
+  "size_m_xyz_blender": [
+   3.89,
+   4.08,
+   8.81
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "spruce_1": {
+  "kind": "spruce",
+  "nodes": [
+   "spruce_1",
+   "spruce_1_snow",
+   "spruce_1_main"
+  ],
+  "tris": 300,
+  "size_m_xyz_blender": [
+   4.57,
+   4.7,
+   8.69
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "spruce_2": {
+  "kind": "spruce",
+  "nodes": [
+   "spruce_2",
+   "spruce_2_snow",
+   "spruce_2_main"
+  ],
+  "tris": 366,
+  "size_m_xyz_blender": [
+   4.39,
+   3.88,
+   8.71
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "spruce_3": {
+  "kind": "spruce",
+  "nodes": [
+   "spruce_3",
+   "spruce_3_snow",
+   "spruce_3_main"
+  ],
+  "tris": 474,
+  "size_m_xyz_blender": [
+   4.1,
+   4.64,
+   10.02
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "spruce_4": {
+  "kind": "spruce",
+  "nodes": [
+   "spruce_4",
+   "spruce_4_snow",
+   "spruce_4_main"
+  ],
+  "tris": 384,
+  "size_m_xyz_blender": [
+   5.3,
+   5.43,
+   9.9
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "spruce_5": {
+  "kind": "spruce",
+  "nodes": [
+   "spruce_5",
+   "spruce_5_snow",
+   "spruce_5_main"
+  ],
+  "tris": 424,
+  "size_m_xyz_blender": [
+   3.81,
+   4.39,
+   8.91
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "balsam_fir_0": {
+  "kind": "balsam_fir",
+  "nodes": [
+   "balsam_fir_0",
+   "balsam_fir_0_snow",
+   "balsam_fir_0_main"
+  ],
+  "tris": 256,
+  "size_m_xyz_blender": [
+   2.02,
+   2.14,
+   7.53
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "balsam_fir_1": {
+  "kind": "balsam_fir",
+  "nodes": [
+   "balsam_fir_1",
+   "balsam_fir_1_snow",
+   "balsam_fir_1_main"
+  ],
+  "tris": 278,
+  "size_m_xyz_blender": [
+   2.45,
+   2.41,
+   8.36
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "balsam_fir_2": {
+  "kind": "balsam_fir",
+  "nodes": [
+   "balsam_fir_2",
+   "balsam_fir_2_snow",
+   "balsam_fir_2_main"
+  ],
+  "tris": 252,
+  "size_m_xyz_blender": [
+   2.8,
+   2.69,
+   10.46
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "white_pine_0": {
+  "kind": "white_pine",
+  "nodes": [
+   "white_pine_0",
+   "white_pine_0_snow",
+   "white_pine_0_main"
+  ],
+  "tris": 1152,
+  "size_m_xyz_blender": [
+   8.15,
+   5.99,
+   17.14
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "white_pine_1": {
+  "kind": "white_pine",
+  "nodes": [
+   "white_pine_1",
+   "white_pine_1_snow",
+   "white_pine_1_main"
+  ],
+  "tris": 976,
+  "size_m_xyz_blender": [
+   6.79,
+   5.09,
+   14.33
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "white_pine_2": {
+  "kind": "white_pine",
+  "nodes": [
+   "white_pine_2",
+   "white_pine_2_snow",
+   "white_pine_2_main"
+  ],
+  "tris": 1164,
+  "size_m_xyz_blender": [
+   6.91,
+   5.91,
+   14.24
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "white_pine_3": {
+  "kind": "white_pine",
+  "nodes": [
+   "white_pine_3",
+   "white_pine_3_snow",
+   "white_pine_3_main"
+  ],
+  "tris": 824,
+  "size_m_xyz_blender": [
+   7.4,
+   3.74,
+   14.47
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "birch_0": {
+  "kind": "birch",
+  "nodes": [
+   "birch_0",
+   "birch_0_snow",
+   "birch_0_main",
+   "birch_0_leaves"
+  ],
+  "tris": 368,
+  "size_m_xyz_blender": [
+   3.72,
+   3.79,
+   9.59
+  ],
+  "layers": [
+   "snow",
+   "main",
+   "leaves"
+  ]
+ },
+ "birch_1": {
+  "kind": "birch",
+  "nodes": [
+   "birch_1",
+   "birch_1_snow",
+   "birch_1_main",
+   "birch_1_leaves"
+  ],
+  "tris": 348,
+  "size_m_xyz_blender": [
+   5.85,
+   5.16,
+   13.64
+  ],
+  "layers": [
+   "snow",
+   "main",
+   "leaves"
+  ]
+ },
+ "birch_2": {
+  "kind": "birch",
+  "nodes": [
+   "birch_2",
+   "birch_2_snow",
+   "birch_2_main",
+   "birch_2_leaves"
+  ],
+  "tris": 716,
+  "size_m_xyz_blender": [
+   5.94,
+   6.38,
+   13.76
+  ],
+  "layers": [
+   "snow",
+   "main",
+   "leaves"
+  ]
+ },
+ "birch_3": {
+  "kind": "birch",
+  "nodes": [
+   "birch_3",
+   "birch_3_snow",
+   "birch_3_main",
+   "birch_3_leaves"
+  ],
+  "tris": 368,
+  "size_m_xyz_blender": [
+   3.68,
+   5.26,
+   11.87
+  ],
+  "layers": [
+   "snow",
+   "main",
+   "leaves"
+  ]
+ },
+ "maple_0": {
+  "kind": "maple",
+  "nodes": [
+   "maple_0",
+   "maple_0_snow",
+   "maple_0_main",
+   "maple_0_leaves"
+  ],
+  "tris": 512,
+  "size_m_xyz_blender": [
+   8.79,
+   10.36,
+   12.86
+  ],
+  "layers": [
+   "snow",
+   "main",
+   "leaves"
+  ]
+ },
+ "maple_1": {
+  "kind": "maple",
+  "nodes": [
+   "maple_1",
+   "maple_1_snow",
+   "maple_1_main",
+   "maple_1_leaves"
+  ],
+  "tris": 628,
+  "size_m_xyz_blender": [
+   7.04,
+   7.52,
+   9.52
+  ],
+  "layers": [
+   "snow",
+   "main",
+   "leaves"
+  ]
+ },
+ "maple_2": {
+  "kind": "maple",
+  "nodes": [
+   "maple_2",
+   "maple_2_snow",
+   "maple_2_main",
+   "maple_2_leaves"
+  ],
+  "tris": 680,
+  "size_m_xyz_blender": [
+   9.17,
+   9.42,
+   13.87
+  ],
+  "layers": [
+   "snow",
+   "main",
+   "leaves"
+  ]
+ },
+ "aspen_0": {
+  "kind": "aspen",
+  "nodes": [
+   "aspen_0",
+   "aspen_0_snow",
+   "aspen_0_main",
+   "aspen_0_leaves"
+  ],
+  "tris": 292,
+  "size_m_xyz_blender": [
+   3.29,
+   3.44,
+   14.41
+  ],
+  "layers": [
+   "snow",
+   "main",
+   "leaves"
+  ]
+ },
+ "aspen_1": {
+  "kind": "aspen",
+  "nodes": [
+   "aspen_1",
+   "aspen_1_snow",
+   "aspen_1_main",
+   "aspen_1_leaves"
+  ],
+  "tris": 312,
+  "size_m_xyz_blender": [
+   4.07,
+   4.1,
+   14.94
+  ],
+  "layers": [
+   "snow",
+   "main",
+   "leaves"
+  ]
+ },
+ "aspen_2": {
+  "kind": "aspen",
+  "nodes": [
+   "aspen_2",
+   "aspen_2_snow",
+   "aspen_2_main",
+   "aspen_2_leaves"
+  ],
+  "tris": 332,
+  "size_m_xyz_blender": [
+   3.66,
+   3.85,
+   15.03
+  ],
+  "layers": [
+   "snow",
+   "main",
+   "leaves"
+  ]
+ },
+ "tamarack_0": {
+  "kind": "tamarack",
+  "nodes": [
+   "tamarack_0",
+   "tamarack_0_snow",
+   "tamarack_0_main",
+   "tamarack_0_leaves"
+  ],
+  "tris": 848,
+  "size_m_xyz_blender": [
+   3.79,
+   3.67,
+   7.54
+  ],
+  "layers": [
+   "snow",
+   "main",
+   "leaves"
+  ]
+ },
+ "tamarack_1": {
+  "kind": "tamarack",
+  "nodes": [
+   "tamarack_1",
+   "tamarack_1_snow",
+   "tamarack_1_main",
+   "tamarack_1_leaves"
+  ],
+  "tris": 744,
+  "size_m_xyz_blender": [
+   3.45,
+   2.36,
+   6.93
+  ],
+  "layers": [
+   "snow",
+   "main",
+   "leaves"
+  ]
+ },
+ "tamarack_2": {
+  "kind": "tamarack",
+  "nodes": [
+   "tamarack_2",
+   "tamarack_2_snow",
+   "tamarack_2_main",
+   "tamarack_2_leaves"
+  ],
+  "tris": 744,
+  "size_m_xyz_blender": [
+   3.8,
+   4.33,
+   8.52
+  ],
+  "layers": [
+   "snow",
+   "main",
+   "leaves"
+  ]
+ },
+ "snag_0": {
+  "kind": "snag",
+  "nodes": [
+   "snag_0",
+   "snag_0_snow",
+   "snag_0_main"
+  ],
+  "tris": 136,
+  "size_m_xyz_blender": [
+   1.16,
+   1.41,
+   7.23
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "snag_1": {
+  "kind": "snag",
+  "nodes": [
+   "snag_1",
+   "snag_1_snow",
+   "snag_1_main"
+  ],
+  "tris": 168,
+  "size_m_xyz_blender": [
+   1.4,
+   2.2,
+   7.15
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "snag_2": {
+  "kind": "snag",
+  "nodes": [
+   "snag_2",
+   "snag_2_snow",
+   "snag_2_main"
+  ],
+  "tris": 104,
+  "size_m_xyz_blender": [
+   1.76,
+   1.29,
+   8.22
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "shrub_0": {
+  "kind": "shrub",
+  "nodes": [
+   "shrub_0",
+   "shrub_0_snow",
+   "shrub_0_main",
+   "shrub_0_leaves"
+  ],
+  "tris": 156,
+  "size_m_xyz_blender": [
+   1.85,
+   1.61,
+   1.07
+  ],
+  "layers": [
+   "snow",
+   "main",
+   "leaves"
+  ]
+ },
+ "shrub_1": {
+  "kind": "shrub",
+  "nodes": [
+   "shrub_1",
+   "shrub_1_snow",
+   "shrub_1_main",
+   "shrub_1_leaves"
+  ],
+  "tris": 116,
+  "size_m_xyz_blender": [
+   1.28,
+   1.18,
+   0.89
+  ],
+  "layers": [
+   "snow",
+   "main",
+   "leaves"
+  ]
+ },
+ "shrub_2": {
+  "kind": "shrub",
+  "nodes": [
+   "shrub_2",
+   "shrub_2_main",
+   "shrub_2_leaves"
+  ],
+  "tris": 116,
+  "size_m_xyz_blender": [
+   1.98,
+   1.91,
+   0.92
+  ],
+  "layers": [
+   "main",
+   "leaves"
+  ]
+ },
+ "shrub_3": {
+  "kind": "shrub",
+  "nodes": [
+   "shrub_3",
+   "shrub_3_snow",
+   "shrub_3_main",
+   "shrub_3_leaves"
+  ],
+  "tris": 156,
+  "size_m_xyz_blender": [
+   1.88,
+   1.38,
+   0.9
+  ],
+  "layers": [
+   "snow",
+   "main",
+   "leaves"
+  ]
+ },
+ "blueberry_0": {
+  "kind": "blueberry",
+  "nodes": [
+   "blueberry_0",
+   "blueberry_0_main",
+   "blueberry_0_leaves"
+  ],
+  "tris": 112,
+  "size_m_xyz_blender": [
+   1.4,
+   1.93,
+   0.39
+  ],
+  "layers": [
+   "main",
+   "leaves"
+  ]
+ },
+ "blueberry_1": {
+  "kind": "blueberry",
+  "nodes": [
+   "blueberry_1",
+   "blueberry_1_main",
+   "blueberry_1_leaves"
+  ],
+  "tris": 192,
+  "size_m_xyz_blender": [
+   1.71,
+   1.42,
+   0.38
+  ],
+  "layers": [
+   "main",
+   "leaves"
+  ]
+ },
+ "blueberry_2": {
+  "kind": "blueberry",
+  "nodes": [
+   "blueberry_2",
+   "blueberry_2_main",
+   "blueberry_2_leaves"
+  ],
+  "tris": 152,
+  "size_m_xyz_blender": [
+   1.46,
+   1.92,
+   0.41
+  ],
+  "layers": [
+   "main",
+   "leaves"
+  ]
+ },
+ "juniper_mat_0": {
+  "kind": "juniper_mat",
+  "nodes": [
+   "juniper_mat_0",
+   "juniper_mat_0_snow",
+   "juniper_mat_0_main"
+  ],
+  "tris": 220,
+  "size_m_xyz_blender": [
+   3.74,
+   2.54,
+   0.63
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "juniper_mat_1": {
+  "kind": "juniper_mat",
+  "nodes": [
+   "juniper_mat_1",
+   "juniper_mat_1_snow",
+   "juniper_mat_1_main"
+  ],
+  "tris": 272,
+  "size_m_xyz_blender": [
+   3.79,
+   3.65,
+   0.68
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "juniper_mat_2": {
+  "kind": "juniper_mat",
+  "nodes": [
+   "juniper_mat_2",
+   "juniper_mat_2_snow",
+   "juniper_mat_2_main"
+  ],
+  "tris": 168,
+  "size_m_xyz_blender": [
+   2.23,
+   1.93,
+   0.51
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "alder_0": {
+  "kind": "alder",
+  "nodes": [
+   "alder_0",
+   "alder_0_main",
+   "alder_0_leaves"
+  ],
+  "tris": 144,
+  "size_m_xyz_blender": [
+   2.19,
+   2.99,
+   4.03
+  ],
+  "layers": [
+   "main",
+   "leaves"
+  ]
+ },
+ "alder_1": {
+  "kind": "alder",
+  "nodes": [
+   "alder_1",
+   "alder_1_main",
+   "alder_1_leaves"
+  ],
+  "tris": 144,
+  "size_m_xyz_blender": [
+   2.71,
+   2.34,
+   3.76
+  ],
+  "layers": [
+   "main",
+   "leaves"
+  ]
+ },
+ "alder_2": {
+  "kind": "alder",
+  "nodes": [
+   "alder_2",
+   "alder_2_main",
+   "alder_2_leaves"
+  ],
+  "tris": 252,
+  "size_m_xyz_blender": [
+   2.86,
+   3.04,
+   4.27
+  ],
+  "layers": [
+   "main",
+   "leaves"
+  ]
+ },
+ "fern_0": {
+  "kind": "fern",
+  "nodes": [
+   "fern_0",
+   "fern_0_leaves"
+  ],
+  "tris": 14,
+  "size_m_xyz_blender": [
+   1.64,
+   1.63,
+   0.4
+  ],
+  "layers": [
+   "leaves"
+  ]
+ },
+ "fern_1": {
+  "kind": "fern",
+  "nodes": [
+   "fern_1",
+   "fern_1_leaves"
+  ],
+  "tris": 12,
+  "size_m_xyz_blender": [
+   1.57,
+   1.41,
+   0.4
+  ],
+  "layers": [
+   "leaves"
+  ]
+ },
+ "fern_2": {
+  "kind": "fern",
+  "nodes": [
+   "fern_2",
+   "fern_2_leaves"
+  ],
+  "tris": 18,
+  "size_m_xyz_blender": [
+   1.41,
+   1.51,
+   0.4
+  ],
+  "layers": [
+   "leaves"
+  ]
+ },
+ "cattails_0": {
+  "kind": "cattails",
+  "nodes": [
+   "cattails_0",
+   "cattails_0_snow",
+   "cattails_0_main"
+  ],
+  "tris": 282,
+  "size_m_xyz_blender": [
+   1.04,
+   1.02,
+   1.82
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "cattails_1": {
+  "kind": "cattails",
+  "nodes": [
+   "cattails_1",
+   "cattails_1_snow",
+   "cattails_1_main"
+  ],
+  "tris": 176,
+  "size_m_xyz_blender": [
+   1.19,
+   0.91,
+   1.89
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "cattails_2": {
+  "kind": "cattails",
+  "nodes": [
+   "cattails_2",
+   "cattails_2_snow",
+   "cattails_2_main"
+  ],
+  "tris": 222,
+  "size_m_xyz_blender": [
+   0.97,
+   1.11,
+   1.87
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "reeds_0": {
+  "kind": "reeds",
+  "nodes": [
+   "reeds_0",
+   "reeds_0_main"
+  ],
+  "tris": 36,
+  "size_m_xyz_blender": [
+   1.5,
+   1.54,
+   1.25
+  ],
+  "layers": [
+   "main"
+  ]
+ },
+ "reeds_1": {
+  "kind": "reeds",
+  "nodes": [
+   "reeds_1",
+   "reeds_1_main"
+  ],
+  "tris": 50,
+  "size_m_xyz_blender": [
+   1.48,
+   1.31,
+   1.27
+  ],
+  "layers": [
+   "main"
+  ]
+ },
+ "reeds_2": {
+  "kind": "reeds",
+  "nodes": [
+   "reeds_2",
+   "reeds_2_main"
+  ],
+  "tris": 38,
+  "size_m_xyz_blender": [
+   1.02,
+   1.3,
+   1.27
+  ],
+  "layers": [
+   "main"
+  ]
+ },
+ "grass_0": {
+  "kind": "grass",
+  "nodes": [
+   "grass_0",
+   "grass_0_main"
+  ],
+  "tris": 20,
+  "size_m_xyz_blender": [
+   0.27,
+   0.22,
+   0.36
+  ],
+  "layers": [
+   "main"
+  ]
+ },
+ "grass_1": {
+  "kind": "grass",
+  "nodes": [
+   "grass_1",
+   "grass_1_main"
+  ],
+  "tris": 26,
+  "size_m_xyz_blender": [
+   0.47,
+   0.31,
+   0.39
+  ],
+  "layers": [
+   "main"
+  ]
+ },
+ "grass_2": {
+  "kind": "grass",
+  "nodes": [
+   "grass_2",
+   "grass_2_main"
+  ],
+  "tris": 24,
+  "size_m_xyz_blender": [
+   0.58,
+   0.5,
+   0.55
+  ],
+  "layers": [
+   "main"
+  ]
+ },
+ "lily_pads_0": {
+  "kind": "lily_pads",
+  "nodes": [
+   "lily_pads_0",
+   "lily_pads_0_snow",
+   "lily_pads_0_main"
+  ],
+  "tris": 383,
+  "size_m_xyz_blender": [
+   2.15,
+   2.35,
+   0.19
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "lily_pads_1": {
+  "kind": "lily_pads",
+  "nodes": [
+   "lily_pads_1",
+   "lily_pads_1_snow",
+   "lily_pads_1_main"
+  ],
+  "tris": 521,
+  "size_m_xyz_blender": [
+   2.92,
+   2.75,
+   0.19
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "lily_pads_2": {
+  "kind": "lily_pads",
+  "nodes": [
+   "lily_pads_2",
+   "lily_pads_2_snow",
+   "lily_pads_2_main"
+  ],
+  "tris": 383,
+  "size_m_xyz_blender": [
+   2.8,
+   2.5,
+   0.19
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "log_0": {
+  "kind": "log",
+  "nodes": [
+   "log_0",
+   "log_0_snow",
+   "log_0_main"
+  ],
+  "tris": 148,
+  "size_m_xyz_blender": [
+   4.25,
+   0.44,
+   0.48
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "log_1": {
+  "kind": "log",
+  "nodes": [
+   "log_1",
+   "log_1_snow",
+   "log_1_main"
+  ],
+  "tris": 148,
+  "size_m_xyz_blender": [
+   4.11,
+   0.43,
+   0.47
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "log_2": {
+  "kind": "log",
+  "nodes": [
+   "log_2",
+   "log_2_snow",
+   "log_2_main"
+  ],
+  "tris": 180,
+  "size_m_xyz_blender": [
+   4.01,
+   0.83,
+   0.82
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "stump_0": {
+  "kind": "stump",
+  "nodes": [
+   "stump_0",
+   "stump_0_snow",
+   "stump_0_main"
+  ],
+  "tris": 112,
+  "size_m_xyz_blender": [
+   0.67,
+   0.67,
+   0.42
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "stump_1": {
+  "kind": "stump",
+  "nodes": [
+   "stump_1",
+   "stump_1_snow",
+   "stump_1_main"
+  ],
+  "tris": 112,
+  "size_m_xyz_blender": [
+   0.76,
+   0.76,
+   0.5
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "stump_2": {
+  "kind": "stump",
+  "nodes": [
+   "stump_2",
+   "stump_2_snow",
+   "stump_2_main"
+  ],
+  "tris": 112,
+  "size_m_xyz_blender": [
+   0.73,
+   0.73,
+   0.77
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "log_pile_0": {
+  "kind": "log_pile",
+  "nodes": [
+   "log_pile_0",
+   "log_pile_0_snow",
+   "log_pile_0_main"
+  ],
+  "tris": 1248,
+  "size_m_xyz_blender": [
+   6.02,
+   3.05,
+   1.67
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "beaver_lodge_0": {
+  "kind": "beaver_lodge",
+  "nodes": [
+   "beaver_lodge_0",
+   "beaver_lodge_0_snow",
+   "beaver_lodge_0_main"
+  ],
+  "tris": 1448,
+  "size_m_xyz_blender": [
+   6.28,
+   5.71,
+   4.08
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "boulder_0": {
+  "kind": "boulder",
+  "nodes": [
+   "boulder_0",
+   "boulder_0_snow",
+   "boulder_0_main"
+  ],
+  "tris": 140,
+  "size_m_xyz_blender": [
+   1.68,
+   1.39,
+   0.95
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "boulder_1": {
+  "kind": "boulder",
+  "nodes": [
+   "boulder_1",
+   "boulder_1_snow",
+   "boulder_1_main"
+  ],
+  "tris": 180,
+  "size_m_xyz_blender": [
+   2.46,
+   1.95,
+   1.25
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "boulder_2": {
+  "kind": "boulder",
+  "nodes": [
+   "boulder_2",
+   "boulder_2_snow",
+   "boulder_2_main"
+  ],
+  "tris": 180,
+  "size_m_xyz_blender": [
+   4.08,
+   3.49,
+   2.04
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "boulder_3": {
+  "kind": "boulder",
+  "nodes": [
+   "boulder_3",
+   "boulder_3_snow",
+   "boulder_3_main"
+  ],
+  "tris": 148,
+  "size_m_xyz_blender": [
+   2.72,
+   2.11,
+   1.58
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "boulder_4": {
+  "kind": "boulder",
+  "nodes": [
+   "boulder_4",
+   "boulder_4_snow",
+   "boulder_4_main"
+  ],
+  "tris": 172,
+  "size_m_xyz_blender": [
+   4.32,
+   3.47,
+   2.56
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "boulder_5": {
+  "kind": "boulder",
+  "nodes": [
+   "boulder_5",
+   "boulder_5_snow",
+   "boulder_5_main"
+  ],
+  "tris": 164,
+  "size_m_xyz_blender": [
+   3.93,
+   3.35,
+   1.67
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "outcrop_0": {
+  "kind": "outcrop",
+  "nodes": [
+   "outcrop_0",
+   "outcrop_0_snow",
+   "outcrop_0_main"
+  ],
+  "tris": 704,
+  "size_m_xyz_blender": [
+   12.15,
+   4.72,
+   1.31
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "outcrop_1": {
+  "kind": "outcrop",
+  "nodes": [
+   "outcrop_1",
+   "outcrop_1_snow",
+   "outcrop_1_main"
+  ],
+  "tris": 652,
+  "size_m_xyz_blender": [
+   7.23,
+   4.61,
+   1.87
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "outcrop_2": {
+  "kind": "outcrop",
+  "nodes": [
+   "outcrop_2",
+   "outcrop_2_snow",
+   "outcrop_2_main"
+  ],
+  "tris": 676,
+  "size_m_xyz_blender": [
+   9.47,
+   5.34,
+   1.84
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "scree_0": {
+  "kind": "scree",
+  "nodes": [
+   "scree_0",
+   "scree_0_snow",
+   "scree_0_main"
+  ],
+  "tris": 712,
+  "size_m_xyz_blender": [
+   4.25,
+   3.38,
+   0.95
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ },
+ "scree_1": {
+  "kind": "scree",
+  "nodes": [
+   "scree_1",
+   "scree_1_snow",
+   "scree_1_main"
+  ],
+  "tris": 884,
+  "size_m_xyz_blender": [
+   4.89,
+   2.42,
+   0.93
+  ],
+  "layers": [
+   "snow",
+   "main"
+  ]
+ }
+}

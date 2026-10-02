@@ -1,7 +1,16 @@
-# Coilover
+# Coilover Remastered
 
-A low poly desert off roader with seventy centimetres of suspension you can
-watch working. Personal project, not GPA.
+A low poly off roader with seventy centimetres of suspension you can watch
+working. Personal project, not GPA.
+
+**This is the remaster.** The original is at
+[RobertWalterJ/coilover](https://github.com/RobertWalterJ/coilover) and still
+runs as a single file with every model generated in code. This fork loads a
+Blender asset pack instead: modelled vehicles, props, flora, roads and
+bridges, authored to the same specification the game was already using. The
+hand built shells are still in `src/game.html` and are used as the fallback
+whenever a model is missing, so the game degrades to the original rather than
+breaking.
 
 Double-click **Launch Coilover.bat**. It starts a local server and opens the
 game. The window it opens also prints an address like `http://192.168.x.x:8797`
@@ -135,16 +144,20 @@ Three deliberate choices that look wrong and are not:
 
 ```
 src/game.html        THE SOURCE. Edit this, and nothing else.
-src/patches/         the 79 one-off scripts that built it, kept for the
-                     reasoning in their docstrings. See the README in there.
-build.py             src/game.html -> app/ and docs/. Run after every edit.
-app/                 the installable copy; the whole folder is what goes on a
-                     phone. Generated. Do not edit by hand.
-  vendor/three.min.js  three.js r128, vendored so it runs with no network
-  sw.js              service worker, page network first, assets cache first
-docs/                byte for byte the same as app/. This is what GitHub Pages
-                     serves. Also generated; also do not edit by hand.
+src/patches/         the one-off scripts that built it, kept for the reasoning
+                     in their docstrings. See the README in there.
+build.py             src/game.html -> docs/index.html. Run after every edit.
+docs/                the built game. ONE output, not two: this is both what
+                     GitHub Pages publishes and what server.mjs serves, so an
+                     asset cannot exist twice at two versions.
+  index.html         generated; do not edit by hand
+  assets/            the Blender pack: vehicles, props, flora, roads, bridges
+  vendor/            three.js r128 and GLTFLoader, vendored to run offline
+  sw.js              service worker; caches every model so an install works
+                     with no signal
 server.mjs           dependency free static server on port 8797
+ASSETS.md            the asset pack's own integration notes
+ASSET-AUDIT.md       the audit of the original game the pack was built against
 ```
 
 `src/game.html` is exactly what publishes as the Artifact. The only difference

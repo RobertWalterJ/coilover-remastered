@@ -510,7 +510,7 @@
   "nodes": [
    "gas_station"
   ],
-  "tris": 548,
+  "tris": 5864,
   "materials": {
    "panel": {
     "color": "#d8cec0"
@@ -544,6 +544,46 @@
    },
    "ice": {
     "color": "#e8e6df"
+   },
+   "glow_signtext": {
+    "color": "#c4452e",
+    "emissive": "#ff6a3a"
+   },
+   "glow_price": {
+    "color": "#f6ead0",
+    "emissive": "#fff0c8"
+   },
+   "signred": {
+    "color": "#c4452e"
+   },
+   "glow_canopylight": {
+    "color": "#fff3d0",
+    "emissive": "#fff0c0"
+   },
+   "cream": {
+    "color": "#f6ead0"
+   },
+   "ink": {
+    "color": "#2b2420"
+   },
+   "bin": {
+    "color": "#4a5a58"
+   },
+   "rack": {
+    "color": "#6b5a52"
+   },
+   "oilcan": {
+    "color": "#c4452e"
+   },
+   "phonebox": {
+    "color": "#2f6f7a"
+   },
+   "glow_phonewin": {
+    "color": "#f0dcb0",
+    "emissive": "#ffd48a"
+   },
+   "icetxt": {
+    "color": "#2f6f7a"
    }
   },
   "dims_m_xyz_blender": [
@@ -557,7 +597,7 @@
   "nodes": [
    "motel_sign"
   ],
-  "tris": 372,
+  "tris": 3448,
   "materials": {
    "post": {
     "color": "#6b5a52"
@@ -570,8 +610,8 @@
     "emissive": "#ff6a3a"
    },
    "glow_vacancy": {
-    "color": "#f6e4bc",
-    "emissive": "#fff0c8"
+    "color": "#c4452e",
+    "emissive": "#ff4530"
    },
    "glow_bulb": {
     "color": "#fff3d0",
@@ -579,12 +619,25 @@
    },
    "footing": {
     "color": "#8a7f72"
+   },
+   "motelletters": {
+    "color": "#1f3e44"
+   },
+   "cream": {
+    "color": "#f6ead0"
+   },
+   "signred": {
+    "color": "#c4452e"
+   },
+   "glow_arrow": {
+    "color": "#e3a948",
+    "emissive": "#ffc870"
    }
   },
   "dims_m_xyz_blender": [
-   5.4,
+   5.7,
    1.2,
-   14.08
+   15.0
   ]
  },
  "props/desert/drive_in": {
@@ -592,7 +645,7 @@
   "nodes": [
    "drive_in"
   ],
-  "tris": 480,
+  "tris": 3616,
   "materials": {
    "screen": {
     "color": "#e6dccb"
@@ -612,11 +665,30 @@
    },
    "dark": {
     "color": "#2f2a30"
+   },
+   "glow_marquee": {
+    "color": "#e3a948",
+    "emissive": "#ffc870"
+   },
+   "glow_marquee2": {
+    "color": "#f6ead0",
+    "emissive": "#fff0c8"
+   },
+   "glow_bulb": {
+    "color": "#fff3d0",
+    "emissive": "#fff0c0"
+   },
+   "signred": {
+    "color": "#c4452e"
+   },
+   "glow_ticketwin": {
+    "color": "#f0dcb0",
+    "emissive": "#ffd48a"
    }
   },
   "dims_m_xyz_blender": [
    17.8,
-   18.51,
+   20.07,
    12.32
   ]
  },
@@ -625,7 +697,7 @@
   "nodes": [
    "water_tower"
   ],
-  "tris": 560,
+  "tris": 1512,
   "materials": {
    "metal": {
     "color": "#8d939a"
@@ -639,6 +711,9 @@
    },
    "post": {
     "color": "#6b5a52"
+   },
+   "ink": {
+    "color": "#2b2420"
    }
   },
   "dims_m_xyz_blender": [
@@ -652,7 +727,7 @@
   "nodes": [
    "aircraft_wreck"
   ],
-  "tris": 212,
+  "tris": 1676,
   "materials": {
    "skin": {
     "color": "#efe4cf"
@@ -662,6 +737,9 @@
    },
    "cowl": {
     "color": "#c4452e"
+   },
+   "cream": {
+    "color": "#f6ead0"
    },
    "rock_#dc9a4e": {
     "color": "#dc9a4e"
@@ -678,7 +756,7 @@
   "nodes": [
    "camp"
   ],
-  "tris": 384,
+  "tris": 1048,
   "materials": {
    "camper": {
     "color": "#e6dccb"
@@ -716,10 +794,40 @@
    },
    "chair": {
     "color": "#2f6f7a"
+   },
+   "cooler": {
+    "color": "#2f6f7a"
+   },
+   "cream": {
+    "color": "#f6ead0"
+   },
+   "propane": {
+    "color": "#c9c5b4"
+   },
+   "step": {
+    "color": "#8d939a"
+   },
+   "ladder": {
+    "color": "#8d939a"
+   },
+   "line": {
+    "color": "#e8e0d0"
+   },
+   "cloth0": {
+    "color": "#c4452e"
+   },
+   "cloth1": {
+    "color": "#e8b93a"
+   },
+   "cloth2": {
+    "color": "#2f6f7a"
+   },
+   "ink": {
+    "color": "#2b2420"
    }
   },
   "dims_m_xyz_blender": [
-   7.43,
+   8.42,
    7.0,
    2.98
   ]
@@ -1005,7 +1113,7 @@
   "nodes": [
    "building"
   ],
-  "tris": 348,
+  "tris": 2080,
   "materials": {
    "plinth": {
     "color": "#6a6560"
@@ -1034,6 +1142,33 @@
    },
    "hvac": {
     "color": "#8d939a"
+   },
+   "glow_shoptext": {
+    "color": "#f6ead0",
+    "emissive": "#fff0c8"
+   },
+   "cream": {
+    "color": "#f6ead0"
+   },
+   "dark": {
+    "color": "#2f2a30"
+   },
+   "glow_blade": {
+    "color": "#e3a948",
+    "emissive": "#ffc870"
+   },
+   "door_1": {
+    "color": "#2f3a40"
+   },
+   "glow_transom": {
+    "color": "#f0dcb0",
+    "emissive": "#ffd48a"
+   },
+   "doorbar": {
+    "color": "#8f8b86"
+   },
+   "step": {
+    "color": "#a19c94"
    }
   },
   "dims_m_xyz_blender": [
@@ -1047,7 +1182,7 @@
   "nodes": [
    "building"
   ],
-  "tris": 396,
+  "tris": 1900,
   "materials": {
    "plinth": {
     "color": "#6a6560"
@@ -1076,6 +1211,36 @@
    },
    "hvac": {
     "color": "#8d939a"
+   },
+   "glow_shoptext": {
+    "color": "#f6ead0",
+    "emissive": "#fff0c8"
+   },
+   "cream": {
+    "color": "#f6ead0"
+   },
+   "dark": {
+    "color": "#2f2a30"
+   },
+   "glow_blade": {
+    "color": "#e3a948",
+    "emissive": "#ffc870"
+   },
+   "door_1": {
+    "color": "#2f3a40"
+   },
+   "glow_transom": {
+    "color": "#f0dcb0",
+    "emissive": "#ffd48a"
+   },
+   "doorbar": {
+    "color": "#8f8b86"
+   },
+   "step": {
+    "color": "#a19c94"
+   },
+   "ac": {
+    "color": "#c9c5b4"
    }
   },
   "dims_m_xyz_blender": [
@@ -1089,7 +1254,7 @@
   "nodes": [
    "building"
   ],
-  "tris": 696,
+  "tris": 1528,
   "materials": {
    "plinth": {
     "color": "#6a6560"
@@ -1127,6 +1292,29 @@
    },
    "post": {
     "color": "#6b5a52"
+   },
+   "glow_shoptext": {
+    "color": "#f6ead0",
+    "emissive": "#fff0c8"
+   },
+   "cream": {
+    "color": "#f6ead0"
+   },
+   "door_1": {
+    "color": "#2f3a40"
+   },
+   "glow_transom": {
+    "color": "#f0dcb0",
+    "emissive": "#ffd48a"
+   },
+   "doorbar": {
+    "color": "#8f8b86"
+   },
+   "step": {
+    "color": "#a19c94"
+   },
+   "ac": {
+    "color": "#c9c5b4"
    }
   },
   "dims_m_xyz_blender": [
@@ -1140,7 +1328,7 @@
   "nodes": [
    "building"
   ],
-  "tris": 840,
+  "tris": 2320,
   "materials": {
    "plinth": {
     "color": "#6a6560"
@@ -1169,11 +1357,44 @@
    },
    "hvac": {
     "color": "#8d939a"
+   },
+   "glow_shoptext": {
+    "color": "#f6ead0",
+    "emissive": "#fff0c8"
+   },
+   "cream": {
+    "color": "#f6ead0"
+   },
+   "dark": {
+    "color": "#2f2a30"
+   },
+   "glow_blade": {
+    "color": "#e3a948",
+    "emissive": "#ffc870"
+   },
+   "door_1": {
+    "color": "#2f3a40"
+   },
+   "glow_transom": {
+    "color": "#f0dcb0",
+    "emissive": "#ffd48a"
+   },
+   "doorbar": {
+    "color": "#8f8b86"
+   },
+   "step": {
+    "color": "#a19c94"
+   },
+   "canopy": {
+    "color": "#2a2c2e"
+   },
+   "ac": {
+    "color": "#c9c5b4"
    }
   },
   "dims_m_xyz_blender": [
    18.5,
-   17.64,
+   17.93,
    52.68
   ]
  },
@@ -1182,7 +1403,7 @@
   "nodes": [
    "building"
   ],
-  "tris": 1140,
+  "tris": 3172,
   "materials": {
    "plinth": {
     "color": "#6a6560"
@@ -1211,11 +1432,44 @@
    },
    "hvac": {
     "color": "#8d939a"
+   },
+   "glow_shoptext": {
+    "color": "#f6ead0",
+    "emissive": "#fff0c8"
+   },
+   "cream": {
+    "color": "#f6ead0"
+   },
+   "dark": {
+    "color": "#2f2a30"
+   },
+   "glow_blade": {
+    "color": "#e3a948",
+    "emissive": "#ffc870"
+   },
+   "door_1": {
+    "color": "#2f3a40"
+   },
+   "glow_transom": {
+    "color": "#f0dcb0",
+    "emissive": "#ffd48a"
+   },
+   "doorbar": {
+    "color": "#8f8b86"
+   },
+   "step": {
+    "color": "#a19c94"
+   },
+   "canopy": {
+    "color": "#2a2c2e"
+   },
+   "ac": {
+    "color": "#c9c5b4"
    }
   },
   "dims_m_xyz_blender": [
    18.5,
-   17.64,
+   17.93,
    75.3
   ]
  },
@@ -1224,7 +1478,7 @@
   "nodes": [
    "building"
   ],
-  "tris": 456,
+  "tris": 1432,
   "materials": {
    "plinth": {
     "color": "#6a6560"
@@ -1253,6 +1507,29 @@
    },
    "hvac": {
     "color": "#8d939a"
+   },
+   "glow_shoptext": {
+    "color": "#f6ead0",
+    "emissive": "#fff0c8"
+   },
+   "cream": {
+    "color": "#f6ead0"
+   },
+   "door_1": {
+    "color": "#2f3a40"
+   },
+   "glow_transom": {
+    "color": "#f0dcb0",
+    "emissive": "#ffd48a"
+   },
+   "doorbar": {
+    "color": "#8f8b86"
+   },
+   "step": {
+    "color": "#a19c94"
+   },
+   "ac": {
+    "color": "#c9c5b4"
    }
   },
   "dims_m_xyz_blender": [
@@ -1462,7 +1739,7 @@
   "nodes": [
    "cottage"
   ],
-  "tris": 396,
+  "tris": 1436,
   "materials": {
    "wood": {
     "color": "#8a6a48"
@@ -1494,11 +1771,23 @@
    },
    "propane": {
     "color": "#c9c5b4"
+   },
+   "screen": {
+    "color": "#4a4f4a"
+   },
+   "mailbox": {
+    "color": "#c4452e"
+   },
+   "cream": {
+    "color": "#f6ead0"
+   },
+   "board": {
+    "color": "#5d4a38"
    }
   },
   "dims_m_xyz_blender": [
    9.2,
-   7.29,
+   9.07,
    5.76
   ]
  },
@@ -1567,7 +1856,7 @@
   "nodes": [
    "general_store"
   ],
-  "tris": 296,
+  "tris": 7480,
   "materials": {
    "wood": {
     "color": "#8a6a48"
@@ -1600,6 +1889,34 @@
    },
    "slab": {
     "color": "#a59a8a"
+   },
+   "cream": {
+    "color": "#f6ead0"
+   },
+   "dark": {
+    "color": "#2f2a30"
+   },
+   "glow_opentext": {
+    "color": "#c4452e",
+    "emissive": "#ff4530"
+   },
+   "ink": {
+    "color": "#2b2420"
+   },
+   "signred": {
+    "color": "#c4452e"
+   },
+   "bench": {
+    "color": "#7d6448"
+   },
+   "barrel": {
+    "color": "#7d5a3a"
+   },
+   "icebox": {
+    "color": "#e8e6df"
+   },
+   "icetxt": {
+    "color": "#2f6f7a"
    }
   },
   "dims_m_xyz_blender": [
@@ -1642,7 +1959,7 @@
   "nodes": [
    "fire_tower"
   ],
-  "tris": 672,
+  "tris": 1876,
   "materials": {
    "steel": {
     "color": "#6d6a66"
@@ -1659,11 +1976,17 @@
    "glow_towerwin": {
     "color": "#fff0cc",
     "emissive": "#ffcf92"
+   },
+   "board": {
+    "color": "#5f7a44"
+   },
+   "cream": {
+    "color": "#f6ead0"
    }
   },
   "dims_m_xyz_blender": [
    3.71,
-   3.71,
+   4.84,
    19.67
   ]
  },
@@ -1711,6 +2034,141 @@
    11.0,
    3.2,
    4.87
+  ]
+ },
+ "props/desert/billboard_0": {
+  "file": "props/desert/billboard_0.glb",
+  "nodes": [
+   "billboard_0"
+  ],
+  "tris": 1092,
+  "materials": {
+   "board": {
+    "color": "#efe4cf"
+   },
+   "post": {
+    "color": "#6a5a54"
+   },
+   "glow_flood": {
+    "color": "#fff3d0",
+    "emissive": "#fff0c0"
+   },
+   "boardface0": {
+    "color": "#f2e2c0"
+   },
+   "boardtext0": {
+    "color": "#c4452e"
+   },
+   "boardsub0": {
+    "color": "#2b2420"
+   }
+  },
+  "dims_m_xyz_blender": [
+   12.2,
+   4.73,
+   12.38
+  ]
+ },
+ "props/desert/billboard_1": {
+  "file": "props/desert/billboard_1.glb",
+  "nodes": [
+   "billboard_1"
+  ],
+  "tris": 1520,
+  "materials": {
+   "board": {
+    "color": "#efe4cf"
+   },
+   "post": {
+    "color": "#6a5a54"
+   },
+   "glow_flood": {
+    "color": "#fff3d0",
+    "emissive": "#fff0c0"
+   },
+   "boardface1": {
+    "color": "#e9f0ea"
+   },
+   "boardtext1": {
+    "color": "#2f6f7a"
+   },
+   "boardsub1": {
+    "color": "#2b2420"
+   }
+  },
+  "dims_m_xyz_blender": [
+   12.2,
+   4.73,
+   12.38
+  ]
+ },
+ "props/desert/billboard_2": {
+  "file": "props/desert/billboard_2.glb",
+  "nodes": [
+   "billboard_2"
+  ],
+  "tris": 1024,
+  "materials": {
+   "board": {
+    "color": "#efe4cf"
+   },
+   "post": {
+    "color": "#6a5a54"
+   },
+   "glow_flood": {
+    "color": "#fff3d0",
+    "emissive": "#fff0c0"
+   },
+   "boardface2": {
+    "color": "#f6ead0"
+   },
+   "boardtext2": {
+    "color": "#c4452e"
+   },
+   "boardsub2": {
+    "color": "#2b2420"
+   }
+  },
+  "dims_m_xyz_blender": [
+   12.2,
+   4.73,
+   12.38
+  ]
+ },
+ "props/desert/billboard_3": {
+  "file": "props/desert/billboard_3.glb",
+  "nodes": [
+   "billboard_3"
+  ],
+  "tris": 1708,
+  "materials": {
+   "board": {
+    "color": "#efe4cf"
+   },
+   "post": {
+    "color": "#6a5a54"
+   },
+   "glow_flood": {
+    "color": "#fff3d0",
+    "emissive": "#fff0c0"
+   },
+   "boardface3": {
+    "color": "#2c2440"
+   },
+   "boardtext3": {
+    "color": "#e3a948"
+   },
+   "boardsub3": {
+    "color": "#f6ead0"
+   },
+   "sun": {
+    "color": "#ff9466"
+   }
+  },
+  "dims_m_xyz_blender": [
+   12.2,
+   4.73,
+   12.38
   ]
  }
 }
