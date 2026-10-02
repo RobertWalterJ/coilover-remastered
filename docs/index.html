@@ -2707,6 +2707,48 @@ function clearBuilt(g, spare){
   }
 }
 
+/* ---- step 6: the roads ----
+   One GLB per map, laid on the same height functions the physics reads, so
+   nothing needs to change about how the ground feels. */
+var ROAD_FILE={0:'roads/roads_desert.glb', 1:'roads/roads_city.glb', 2:'roads/roads_shield.glb'};
+var ROAD_GROUP={};
+function mapGroup(i){ return i===1? G_CITY : (i===2? G_SHIELD : G_DESERT); }
+
+function addRoads(i){
+  if(typeof MDL==='undefined' || !MDL.ready()) return;
+  if(ROAD_GROUP[i]) return;                       /* already standing */
+  var file=ROAD_FILE[i]; if(!file) return;
+  var key='roads/'+i;
+  ROAD_GROUP[i]='loading';
+  MDL.loadOne(key, file, function(ok){
+    if(!ok){ ROAD_GROUP[i]=null; return; }
+    var r=MDL.get(key,{tex:'rock'});
+    if(!r){ ROAD_GROUP[i]=null; return; }
+    /* The terrain is a 5 m grid and bows above the true surface between
+       samples, so a road lying 2 to 10 cm proud still sinks into it. Bias the
+       depth test rather than lifting the road, which would float at the
+       crests instead. Clone to bias, but never clone a glow material: the
+       light pool matches those by identity. */
+    var biased={};
+    r.traverse(function(o){
+      if(!o.isMesh || !o.material) return;
+      var m=o.material;
+      if(m.name && m.name.indexOf('glow_')===0) return;
+      if(!biased[m.uuid]){
+        var c=m.clone();
+        c.polygonOffset=true; c.polygonOffsetFactor=-1; c.polygonOffsetUnits=-4;
+        c.userData=m.userData;                     /* keep the weather role */
+        biased[m.uuid]=c;
+      }
+      o.material=biased[m.uuid];
+      o.receiveShadow=true; o.castShadow=false;    /* a road casts nothing */
+    });
+    mapGroup(i).add(r);
+    ROAD_GROUP[i]=r;
+    if(typeof rebuildLightPts==='function') rebuildLightPts();
+  });
+}
+
 function rebuildAssetProps(){
   if(typeof MDL==='undefined' || !MDL.ready()) return;
   var opts={tex:'rock'};
@@ -2833,7 +2875,7 @@ function applyAssetWheels(V){
    materials inside it are shared instances, which is what the glow system and
    the shader patching both require. */
 var MDL=(function(){
-  var ROOT='assets/', manifest=null, cache={}, mats={}, given={}, ready=false;
+  var ROOT='assets/', manifest=null, cache={}, mats={}, given={}, pending={}, ready=false;
 
   /* One material per NAME, not per mesh. LGLOW and GLOW match by identity, and
      styleMat patches uniforms per material, so cloning would break both. */
@@ -2922,6 +2964,26 @@ var MDL=(function(){
       }).catch(function(){ ready=true; onDone&&onDone(); });   /* no assets: fall back to the built in shells */
     },
     has:function(k){ return !!cache[k]; },
+    /* Fetch and parse one file that is not in the manifest, once. Used for
+       the roads, which are per map and far too big to pull in at boot. */
+    loadOne:function(k,file,cb){
+      if(cache[k]){ cb && cb(true); return; }
+      if(pending[k]){ pending[k].push(cb); return; }
+      pending[k]=[cb];
+      var loader=new THREE.GLTFLoader();
+      fetch(ROOT+file).then(function(r){
+        if(!r.ok) throw new Error(r.status);
+        return r.arrayBuffer();
+      }).then(function(buf){
+        loader.parse(buf,'',function(g){
+          cache[k]=g.scene;
+          var q=pending[k]; pending[k]=null;
+          q.forEach(function(f){ f && f(true); });
+        }, function(){ var q=pending[k]; pending[k]=null; q.forEach(function(f){ f && f(false); }); });
+      }).catch(function(){
+        var q=pending[k]; pending[k]=null; q.forEach(function(f){ f && f(false); });
+      });
+    },
     info:function(k){ return manifest && manifest[k]; },
     /* A clone per use, with the shared materials carried across. */
     get:function(k,opts){
@@ -5917,6 +5979,7 @@ function setMap(i){
   if(i===2) buildShieldProps();
   /* the props for this map have just been built, so swap in their models */
   if(typeof rebuildAssetProps==='function') rebuildAssetProps();
+  if(typeof addRoads==='function') addRoads(i);
   rebuildLightPts();
   var st=MAPS[i].start;
   placeTruck(st[0],st[1],st[2]);
@@ -6144,6 +6207,7 @@ MDL.load(function(){
     /* the city's buildings are instanced inside buildCityProps, not swapped
        after it, so that map has to be built again rather than patched */
     if(MAP===1 && typeof buildCityProps==='function'){ buildCityProps(); rebuildLightPts(); }
+    if(typeof addRoads==='function') addRoads(MAP);
   }catch(e){
     window.__mdlError=(e && e.stack) || String(e);
     if(window.console) console.error('asset swap failed:', e);

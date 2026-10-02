@@ -1,0 +1,9 @@
+{
+ "map": "city",
+ "world_m": 560.0,
+ "samples": 561,
+ "metres_per_sample": 1.0,
+ "height_min": -19.78539809932581,
+ "height_max": 87.70863178173414,
+ "note": "x = column (west to east), z = row; height = min + png/65535 * (max - min)"
+}
