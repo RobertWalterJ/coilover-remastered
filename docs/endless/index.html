@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+</head>
+<body>
+<title>Coilover Endless</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* layout: full-bleed 3D view; a place card top left, world controls top right, driving pads bottom; one dark game look */
+:root{--ink:#14181b;--panel:rgba(20,24,27,.76);--line:rgba(240,236,226,.16);--paper:#f1ece2;--muted:#a9b2b0;--brass:#e3a948;
+  --display:"Barlow Condensed",system-ui,sans-serif;--body:Barlow,system-ui,sans-serif;color-scheme:dark}
+[hidden]{display:none!important}
+html,body{height:100%;margin:0}body{background:var(--ink);color:var(--paper);font-family:var(--body);overflow:hidden;-webkit-user-select:none;user-select:none}
+#c{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none}
+button,input{font:600 15px/1 var(--display);letter-spacing:.06em;color:var(--paper)}
+button{text-transform:uppercase;background:transparent;border:1px solid transparent;border-radius:8px;padding:10px 12px;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+button[aria-pressed="true"],button[aria-expanded="true"]{border-color:rgba(227,169,72,.6);color:var(--brass);background:rgba(227,169,72,.12)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.top{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));left:16px;right:16px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap;pointer-events:none}
+.top>*{pointer-events:auto}
+.place{padding:10px 14px;min-width:0;max-width:min(360px,100%)}
+#where{font:700 20px/1.1 var(--display);letter-spacing:.02em;margin:0}
+#on{margin:4px 0 0;color:var(--muted);font-size:14px}
+.ctrl{display:flex;flex-direction:column;gap:6px;align-items:flex-end;max-width:100%}
+.row{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;padding:5px}
+#seedform{display:flex;gap:4px;padding:5px;align-items:center}
+#seedform label{font:600 12px var(--display);letter-spacing:.16em;text-transform:uppercase;color:var(--muted);padding:0 4px 0 6px}
+#seed{width:9.5em;max-width:40vw;background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:7px;padding:8px 9px;text-transform:none;letter-spacing:.02em}
+#wxpanel{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;padding:5px;max-width:min(560px,calc(100vw - 32px))}
+.pads{position:fixed;left:16px;right:16px;bottom:calc(14px + env(safe-area-inset-bottom,0px));display:flex;justify-content:space-between;pointer-events:none}
+.pads .grp{display:flex;gap:10px;pointer-events:auto}
+.pad{width:68px;height:68px;border-radius:50%;background:var(--panel);border:1px solid var(--line);display:grid;place-items:center;padding:0;touch-action:none;backdrop-filter:blur(8px)}
+.pad svg{width:28px;height:28px;fill:none;stroke:var(--paper);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.pad.on{background:rgba(227,169,72,.28);border-color:var(--brass)}
+.pad span{font:700 13px var(--display);letter-spacing:.1em}
+@media (hover:hover) and (pointer:fine){.pads{opacity:.55}.help{display:block}}
+.help{display:none;position:fixed;left:50%;transform:translateX(-50%);bottom:calc(30px + env(safe-area-inset-bottom,0px));color:var(--muted);font-size:13px;pointer-events:none;text-align:center;width:max-content;max-width:calc(100vw - 220px)}
+#note{position:fixed;left:50%;top:42%;transform:translateX(-50%);padding:10px 16px;font-size:15px;max-width:calc(100vw - 32px)}
+#msg{position:fixed;inset:0;display:grid;place-items:center;color:var(--muted);font-size:15px;background:var(--ink)}
+</style>
+<canvas id="c" aria-label="An endless procedural world to drive through"></canvas>
+<div class="top">
+  <div class="panel place"><p id="where">Pike country</p><p id="on">On the highway</p></div>
+  <div class="ctrl">
+    <form id="seedform" class="panel" autocomplete="off"><label for="seed">World</label><input id="seed" name="seed" spellcheck="false" aria-label="World seed"><button type="submit">Go</button><button type="button" id="dice" title="A new world from a random seed">New</button></form>
+    <div class="row panel"><button id="cruise" aria-pressed="false" title="Follow the roads, picking a way at every junction (C)">Cruise</button><button id="wxbtn" aria-expanded="false">Weather</button></div>
+    <div id="wxpanel" class="panel" hidden><div id="states" style="display:contents"></div></div>
+  </div>
+</div>
+<div class="pads">
+  <div class="grp">
+    <button class="pad" data-pad="left" aria-label="Steer left"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <button class="pad" data-pad="right" aria-label="Steer right"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+  </div>
+  <div class="grp">
+    <button class="pad" data-pad="brake" aria-label="Brake and reverse"><span>BACK</span></button>
+    <button class="pad" data-pad="gas" aria-label="Accelerate"><span>GO</span></button>
+  </div>
+</div>
+<p class="help">Arrow keys or WASD to drive. C to cruise the roads. Drag to look around.</p>
+<div id="note" class="panel" hidden></div>
+<div id="msg">Loading the models</div>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script>
+<script src="worldgen.js"></script>
+<script src="weather.js"></script>
+<script type="module" src="endless.js"></script>
+
+</body>
+</html>
