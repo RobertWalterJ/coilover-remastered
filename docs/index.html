@@ -2080,6 +2080,79 @@ function wallNear(px,pz,py){
 
 /* one merged geometry per tile, one material, so the city is a few draws */
 var BTILE=192, BLD_MAT=null;
+/* ---- the city, from models ----
+   One InstancedMesh per component mesh per model, so 206 buildings cost about
+   fifty draw calls rather than several hundred. Returns null if the models are
+   not available, and the caller falls back to the merged boxes. */
+var CITY_MODELS=['props/city/building_0','props/city/building_1','props/city/building_2',
+                 'props/city/building_3','props/city/building_4','props/city/building_5'];
+function buildCityModels(){
+  if(typeof MDL==='undefined' || !MDL.ready()) return null;
+
+  /* take each model apart once: geometry baked into the model's own frame,
+     plus its material and its authored size */
+  var parts=[], sizes=[];
+  for(var mi=0;mi<CITY_MODELS.length;mi++){
+    var key=CITY_MODELS[mi];
+    if(!MDL.has(key)) return null;
+    var root=MDL.get(key,{tex:'metal'});
+    if(!root) return null;
+    root.updateMatrixWorld(true);
+    var box=new THREE.Box3().setFromObject(root);
+    var sz=box.getSize(new THREE.Vector3());
+    sizes.push({w:sz.x||1, d:sz.z||1, h:sz.y||1, base:box.min.y});
+    var list=[];
+    root.traverse(function(o){
+      if(!o.isMesh) return;
+      var g=o.geometry.clone();
+      g.applyMatrix4(o.matrixWorld);          /* bake the local transform in */
+      list.push({geo:g, mat:o.material});
+    });
+    parts.push(list);
+  }
+
+  /* choose a model per record: closest footprint, then closest height */
+  var use=[]; for(var u=0;u<CITY_MODELS.length;u++) use.push([]);
+  for(var i=0;i<BLD.length;i++){
+    var B=BLD[i];
+    if(B.h===undefined) continue;
+    var best=0, bestScore=1e9;
+    for(var m2=0;m2<sizes.length;m2++){
+      var S=sizes[m2];
+      var sc1=Math.abs(S.w-B.w)/Math.max(1,B.w) + Math.abs(S.d-B.d)/Math.max(1,B.d)
+            + Math.abs(S.h-B.h)/Math.max(1,B.h)*0.6;
+      if(sc1<bestScore){ bestScore=sc1; best=m2; }
+    }
+    use[best].push(B);
+  }
+
+  var grp=new THREE.Group(), d4=new THREE.Object3D(), made=0;
+  for(var mi2=0;mi2<parts.length;mi2++){
+    var recs=use[mi2]; if(!recs.length) continue;
+    var S2=sizes[mi2];
+    for(var pi=0;pi<parts[mi2].length;pi++){
+      var P=parts[mi2][pi];
+      var im=new THREE.InstancedMesh(P.geo, P.mat, recs.length);
+      im.castShadow=true; im.receiveShadow=true;
+      /* the bounding sphere of an InstancedMesh is the geometry's, at the
+         group origin, so it culls away the moment the origin leaves frame */
+      im.frustumCulled=false;
+      for(var r=0;r<recs.length;r++){
+        var R=recs[r];
+        d4.position.set(R.x, R.y, R.z);
+        d4.scale.set(R.w/S2.w, R.h/S2.h, R.d/S2.d);
+        d4.rotation.set(0,0,0);
+        d4.updateMatrix();
+        im.setMatrixAt(r, d4.matrix);
+      }
+      im.instanceMatrix.needsUpdate=true;
+      grp.add(im); made++;
+    }
+  }
+  grp.userData.drawCalls=made;
+  return grp;
+}
+
 function buildCityBuildings(){
   var pos=[], col=[], tiles={};
   var C1=new THREE.Color();
@@ -2315,6 +2388,7 @@ function buildShieldProps(){
     var g=new THREE.Group();
     var gy=height(cx,cz);
     g.position.set(cx,gy,cz); g.rotation.y=ang; G_SHIELD.add(g);
+    g.userData.asset='props/shield/cottage';
     /* the cottage: gable roof, screened porch, lit windows */
     put(g,6.2,2.9,4.6, woodM, 0,1.45,0);
     var r1=put(g,4.0,0.22,4.9, roofM2, -1.6,3.28,0); r1.rotation.z= 0.62;
@@ -2340,6 +2414,9 @@ function buildShieldProps(){
   /* ---- a dock, reaching from a shore out over the water ---- */
   function dock(sx,sz,dirX,dirZ){
     var g=new THREE.Group(); G_SHIELD.add(g);
+    /* the dock walks its own length out over the water, so it keeps its
+       built planks; only the canoe on it becomes a model */
+    g.userData.assetCanoe=true;
     var len=0, px=sx, pz=sz;
     /* walk out until the water is properly under it */
     for(var st=0;st<14;st++){
@@ -2399,6 +2476,7 @@ function buildShieldProps(){
     for(var t2=0;t2<40 && shRoadD(sx,sz)<14;t2++) sx+=2;
     var gy=height(sx,sz);
     var g=new THREE.Group(); g.position.set(sx,gy,sz); G_SHIELD.add(g);
+    g.userData.asset='props/shield/general_store';
     put(g,11.0,4.0,7.0, woodM, 0,2.00,0);
     put(g,11.6,0.30,7.6, tinM, 0,4.15,0, false);
     put(g,11.2,1.7,0.30, rustM, 0,5.05,-0.2, false);      /* false front */
@@ -2423,6 +2501,7 @@ function buildShieldProps(){
     var px=-58, pz=64;
     var gy=height(px,pz);
     var g=new THREE.Group(); g.position.set(px,gy,pz); g.rotation.y=0.8; G_SHIELD.add(g);
+    g.userData.asset='props/shield/derelict_pickup';
     put(g,1.9,0.9,4.4, rustM, 0,0.85,0);
     put(g,1.7,0.8,1.5, rustM, 0,1.60,0.7);
     put(g,1.5,0.5,0.10, m(0x3a4a52), 0,1.72,1.45, false);
@@ -2441,6 +2520,7 @@ function buildShieldProps(){
     }
     var gy=height(bx,bz);
     var g=new THREE.Group(); g.position.set(bx,gy,bz); G_SHIELD.add(g);
+    g.userData.asset='props/shield/fire_tower';
     var H=17;
     [[-1,-1],[1,-1],[-1,1],[1,1]].forEach(function(c3){
       var lg=put(g,0.22,H,0.22, steelM, c3[0]*1.5, H/2, c3[1]*1.5);
@@ -2469,6 +2549,7 @@ function buildShieldProps(){
       if(Math.hypot(px2,pz2)>200 || shLakeD(px2,pz2)<1.1){ prev=null; continue; }
       var gy=height(px2,pz2);
       var g=new THREE.Group(); g.position.set(px2,gy,pz2); G_SHIELD.add(g);
+      g.userData.asset='props/shield/hydro_pole';
       put(g,0.24,9.4,0.24, poleM, 0,4.70,0);
       put(g,2.2,0.14,0.14, poleM, 0,9.00,0, false);
       var top={x:px2,y:gy+9.0,z:pz2};
@@ -2562,7 +2643,10 @@ function buildCityProps(){
     }
   }
   bldGridBuild();
-  G_CITY.add(buildCityBuildings());
+  /* Models if they are loaded, the merged boxes if not. Either way the BLD
+     records are untouched, so collision matches whatever is drawn. */
+  var cityMdl=buildCityModels();
+  G_CITY.add(cityMdl || buildCityBuildings());
   function lampMat(){
     var mm=new THREE.MeshPhongMaterial({color:sc(0xfff0cc),specular:0x000000,
       shininess:0,flatShading:true});
@@ -2595,6 +2679,100 @@ function buildCityProps(){
         made++;
       }
     }
+  }
+}
+
+/* ---- step 5: the built world, swapped for the modelled one ----
+   Each entry keeps the group the game already holds a reference to and
+   replaces only what is inside it, so positions, yaw, collision records,
+   discovery state and every existing reference survive untouched. */
+var PROP_FOR={
+  'Gas station':'props/desert/gas_station',
+  'Motel sign' :'props/desert/motel_sign',
+  'Drive in'   :'props/desert/drive_in',
+  'Water tower':'props/desert/water_tower',
+  'Old wreck'  :'props/desert/aircraft_wreck',
+  'The camp'   :'props/desert/camp',
+  'Windmill'   :'props/desert/windmill',
+  'Stone ring' :'props/desert/stone_ring'
+};
+
+/* Empty a group of its built geometry while sparing the things the game holds
+   on to by reference. */
+function clearBuilt(g, spare){
+  for(var i=g.children.length-1;i>=0;i--){
+    var c=g.children[i];
+    if(spare && spare.indexOf(c)>=0) continue;
+    g.remove(c);
+  }
+}
+
+function rebuildAssetProps(){
+  if(typeof MDL==='undefined' || !MDL.ready()) return;
+  var opts={tex:'rock'};
+
+  /* ---- the eight landmarks ---- */
+  for(var i=0;i<LANDMARKS.length;i++){
+    var L=LANDMARKS[i];
+    if(!L.g || L.assetDone) continue;
+    var key=PROP_FOR[L.name];
+    if(!key || !MDL.has(key)) continue;
+    var m=MDL.get(key,opts);
+    if(!m) continue;
+    clearBuilt(L.g,[L.orb,L.flag]);
+    L.g.add(m);
+    L.assetDone=true;
+  }
+
+  /* ---- the windmill rotor, which turns every frame ---- */
+  if(typeof WINDMILL!=='undefined' && WINDMILL && !WINDMILL.assetDone
+     && MDL.has('props/desert/windmill')){
+    var rot=MDL.node('props/desert/windmill','windmill_rotor',opts);
+    if(rot){
+      clearBuilt(WINDMILL,[]);
+      rot.position.set(0,0,0); rot.rotation.set(0,0,0);
+      WINDMILL.add(rot);
+      WINDMILL.assetDone=true;
+    }
+  }
+
+  /* ---- Pike Narrows structures ----
+     Each was tagged with its model as it was built, so the placement work
+     (camps on flat shore, the tower on the highest dome) is kept and only
+     the geometry changes. */
+  if(typeof G_SHIELD!=='undefined') G_SHIELD.traverse(function(o){
+    if(!o.isGroup || o.userData.assetDone) return;
+    if(o.userData.asset && MDL.has(o.userData.asset)){
+      var mm=MDL.get(o.userData.asset,{tex:'rock'});
+      if(mm){ clearBuilt(o,[]); o.add(mm); o.userData.assetDone=true; }
+    }
+    /* the camps carry an outhouse of their own */
+    if(o.userData.asset==='props/shield/cottage' && o.userData.assetDone
+       && MDL.has('props/shield/outhouse')){
+      var oh=MDL.get('props/shield/outhouse',{tex:'rock'});
+      if(oh){ oh.position.set(5.0,0,2.6); o.add(oh); }
+    }
+  });
+
+  /* ---- the twelve circuit gates ----
+     checkGates recolours every child except the beam to teal on a pass, so
+     the model's meshes have to BE those children. */
+  for(var gi=0;gi<GATES.length;gi++){
+    var G=GATES[gi];
+    if(!G.g || G.assetDone || !MDL.has('props/desert/circuit_gate')) continue;
+    var gm=MDL.get('props/desert/circuit_gate',{tex:'metal'});
+    if(!gm) continue;
+    clearBuilt(G.g,[G.beam]);
+    /* lift the meshes up to be direct children, so the recolour walk reaches
+       them: it only looks at g.children, not the whole subtree */
+    var kids=[];
+    gm.traverse(function(o){ if(o.isMesh) kids.push(o); });
+    kids.forEach(function(o){
+      if(o.parent) o.parent.remove(o);
+      o.material=o.material.clone();   /* a gate recolours on its own */
+      G.g.add(o);
+    });
+    G.assetDone=true;
   }
 }
 
@@ -5737,6 +5915,8 @@ function setMap(i){
      the lamps have to exist before the light index can find them. */
   if(i===1) buildCityProps();
   if(i===2) buildShieldProps();
+  /* the props for this map have just been built, so swap in their models */
+  if(typeof rebuildAssetProps==='function') rebuildAssetProps();
   rebuildLightPts();
   var st=MAPS[i].start;
   placeTruck(st[0],st[1],st[2]);
@@ -5961,6 +6141,9 @@ MDL.load(function(){
   try{
     window.__setVehicle(VEH);
     if(typeof rebuildAssetProps==='function') rebuildAssetProps();
+    /* the city's buildings are instanced inside buildCityProps, not swapped
+       after it, so that map has to be built again rather than patched */
+    if(MAP===1 && typeof buildCityProps==='function'){ buildCityProps(); rebuildLightPts(); }
   }catch(e){
     window.__mdlError=(e && e.stack) || String(e);
     if(window.console) console.error('asset swap failed:', e);
