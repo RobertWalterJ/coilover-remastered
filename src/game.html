@@ -258,6 +258,21 @@
   .bars i{flex:1;height:6px;border-radius:3px;background:#2c2233;display:block;overflow:hidden}
   .bars b{display:block;height:100%;background:var(--amber);border-radius:3px;
           transition:width .22s}
+  .fund{display:flex;align-items:baseline;gap:8px;font-weight:600;font-size:10px;
+        text-transform:uppercase;letter-spacing:.14em;color:var(--mute);margin:2px 0 9px}
+  .fund b{font-size:15px;letter-spacing:0;color:var(--cream);font-weight:700}
+  .parts{display:flex;flex-direction:column;gap:7px;margin:0 0 12px}
+  .part{display:flex;align-items:center;gap:10px}
+  .part .pn{flex:1;min-width:0}
+  .part .pt{display:flex;align-items:center;gap:7px;font-weight:600;font-size:10px;
+            text-transform:uppercase;letter-spacing:.14em;color:var(--cream)}
+  .part .pips{display:flex;gap:3px}
+  .part .pips u{width:12px;height:5px;border-radius:2px;background:#2c2233;display:block}
+  .part .pips u.on{background:var(--amber)}
+  .part .pd{font-size:11px;color:var(--mute);line-height:1.3;margin-top:3px}
+  .part .pbuy{flex:0 0 96px;margin-top:0;padding:9px 0;font-size:11px;letter-spacing:.06em}
+  .part .pbuy.max{opacity:.55}
+  .part .pbuy.short{color:var(--mute)}
   .gnav{display:flex;align-items:center;gap:10px;margin-bottom:2px}
   .gprev,.gnext{flex:0 0 54px;margin-top:0;padding:13px 0;font-size:18px}
   .gdots{flex:1;display:flex;justify-content:center;gap:7px}
@@ -395,6 +410,8 @@
       <div><span>Travel</span><i><b id="g-trav"></b></i></div>
       <div><span>Downforce</span><i><b id="g-aero"></b></i></div>
     </div>
+    <div class="fund">Parts fund <b id="g-fund">0</b></div>
+    <div class="parts" id="g-parts"></div>
     <div class="gnav">
       <button class="go ghost gprev" id="g-prev" aria-label="Previous vehicle">&lt;</button>
       <div class="gdots" id="g-dots"></div>
@@ -1714,7 +1731,8 @@ var GATES=[];
 
 /* ================= what carries over ================= */
 var MAPN=96;
-var PROG={ odo:0, air:0, gates:0, found:{}, jump:[0,0,0], jumpAt:[null,null,null],
+var PROG={ up:{}, spent:0,
+           odo:0, air:0, gates:0, found:{}, jump:[0,0,0], jumpAt:[null,null,null],
            score:0, career:0, best:0, top:0, lap:0, seg:{}, feat:{},
            mapv:new Uint8Array(MAPN*MAPN), mapc:new Uint8Array(MAPN*MAPN) };
 var SAVEKEY='coilover.v1';
@@ -1733,6 +1751,8 @@ function loadProg(){
     PROG.career=(o.career!==undefined? o.career : (o.score||0));
     PROG.best=o.best||0; PROG.top=o.top||0; PROG.lap=o.lap||0; PROG.seg=o.seg||{};
     PROG.feat=o.feat||{};
+    PROG.up=o.up||{};
+    PROG.spent=o.spent||0;
     /* the explored map is per session too: an overlay that is already fully
        uncovered is not information */
   }catch(e){}
@@ -1744,7 +1764,7 @@ function saveProg(){
       odo:PROG.odo, air:PROG.air, gates:PROG.gates, found:PROG.found,
       jump:PROG.jump, jumpAt:PROG.jumpAt,
       career:PROG.career, best:PROG.best, top:PROG.top, lap:PROG.lap, seg:PROG.seg,
-      feat:PROG.feat}));
+      feat:PROG.feat, up:PROG.up, spent:PROG.spent}));
   }catch(e){}
 }
 loadProg();
@@ -4171,7 +4191,9 @@ var TRUCK_PAINT=null;
   /* Swap everything a vehicle owns: the numbers the solver reads, where the
      struts sit, how big the wheels are, and the shell itself. */
   window.__setVehicle=function(i){
-    var V=VEHICLES[i]; VEH=i;
+    /* the upgraded spec, not the showroom one */
+    var V=(typeof upSpec==='function')? upSpec(i) : VEHICLES[i];
+    VEH=i;
     MASS=V.mass; TRACK=V.track; WHEELBASE=V.wb; WHEEL_R=V.wheelR;
     SUS_REST=V.rest; SUS_MAX=V.susMax; SUS_MIN=V.susMin;
     SPRING_K=V.k; DAMP_BUMP=V.dBump; DAMP_REB=V.dReb;
@@ -4405,6 +4427,78 @@ function airName(air,dist){
 /* Unlocking is derived from the lifetime tally rather than stored, so it can
    never disagree with the number on screen. */
 function priceOf(o){ return o.unlock||0; }
+
+/* ---- parts ----
+   Four of them, three levels each, fitted per vehicle. See src/upgrades.py
+   for why these multipliers and not others. */
+var PARTS=[
+  {k:'eng',  name:'Engine',     why:'Pulls harder, and keeps pulling'},
+  {k:'box',  name:'Gearbox',    why:'Longer legs down a straight'},
+  {k:'sus',  name:'Suspension', why:'Soaks up landings instead of bouncing'},
+  {k:'tyre', name:'Tyres',      why:'Holds on longer before it lets go'}
+];
+var PART_PRICE=[2500, 6000, 14000];
+function upLevels(id){
+  var u=PROG.up[id];
+  if(!u){ u=PROG.up[id]={eng:0,box:0,sus:0,tyre:0}; }
+  return u;
+}
+function upPrice(lvl){ return PART_PRICE[lvl]||0; }
+function bank(){ return Math.max(0, PROG.career-(PROG.spent||0)); }
+
+/* The spec the solver and the garage both read. One function, so a bar can
+   never disagree with the car it is describing. */
+function upSpec(i){
+  var base=VEHICLES[i], V={}, kk;
+  for(kk in base) V[kk]=base[kk];
+  var u=upLevels(base.id);
+
+  if(u.eng){
+    V.drive=base.drive*Math.pow(1.20,u.eng);
+    /* Torque is not free: the friction ellipse takes lateral grip away from a
+       saturated tyre, which is what made the Veloce undriveable at 52 kN. An
+       upgraded engine raises a traction control floor so the last part fitted
+       can never be the one that ruins the car. */
+    if(u.eng>=2) V.tc=Math.max(base.tc||0, 0.95);
+  }
+  if(u.box){
+    V.vmax=(base.vmax||52)*Math.pow(1.09,u.box);
+    /* Top speed here is drag limited long before it is gearing limited, so
+       the part that matters is the drag, not the ratio. Measured: raising
+       vmax alone moved the Bracken's terminal speed by almost nothing. */
+    V.cd=(base.cd===undefined?0.357:base.cd)*Math.pow(0.92,u.box);
+  }
+  if(u.sus){
+    V.susMax=base.susMax+0.07*u.sus;
+    V.k=base.k*Math.pow(1.05,u.sus);
+    V.dBump=base.dBump*Math.pow(1.07,u.sus);
+    V.dReb=base.dReb*Math.pow(1.07,u.sus);
+  }
+  if(u.tyre){
+    V.muF=base.muF*Math.pow(1.055,u.tyre);
+    V.muR=base.muR*Math.pow(1.055,u.tyre);
+    V.brake=base.brake*Math.pow(1.04,u.tyre);
+    V.tyreW=base.tyreW+0.03*u.tyre;        /* and they look the part */
+  }
+  return V;
+}
+
+function fitPart(k){
+  var V=VEHICLES[VEH], u=upLevels(V.id), lvl=u[k]||0;
+  if(lvl>=3) return;
+  var price=upPrice(lvl);
+  if(bank()<price){
+    popHold('Parts fund short', commas(price-bank())+' points to go', 2);
+    return;
+  }
+  u[k]=lvl+1;
+  PROG.spent=(PROG.spent||0)+price;
+  saveProg();
+  var P=null;
+  for(var q=0;q<PARTS.length;q++) if(PARTS[q].k===k) P=PARTS[q];
+  popHold((P?P.name:'Part')+' fitted', V.name, 2);
+  pickVehicle(VEH);          /* rebuild the car, resettle it, redraw the card */
+}
 function have(o){ return PROG.career >= priceOf(o); }
 function commas(v){ return String(Math.round(v)).replace(/\B(?=(\d{3})+(?!\d))/g,','); }
 /* The cheapest thing still out of reach, which is the only one worth naming. */
@@ -6501,7 +6595,7 @@ document.getElementById('b-pedal').addEventListener('click',function(){
 
 /* Bars come straight off the spec, so they can never disagree with the car. */
 function garageCard(){
-  var V=VEHICLES[VEH];
+  var V=upSpec(VEH);
   document.getElementById('g-name').textContent=V.name;
   document.getElementById('g-kind').textContent=V.kind;
   function pct(v,lo,hi){ return Math.round(Math.max(0.08,Math.min(1,(v-lo)/(hi-lo)))*100)+'%'; }
@@ -6516,6 +6610,34 @@ function garageCard(){
   for(var i=0;i<VEHICLES.length;i++)
     d+='<u class="'+(i===VEH?'on':(have(VEHICLES[i])?'':'off'))+'"></u>';
   document.getElementById('g-dots').innerHTML=d;
+
+  /* the parts, drawn from the same levels the spec above was built from */
+  var fd=document.getElementById('g-fund');
+  if(fd) fd.textContent=commas(bank());
+  var fw=document.querySelector('#garage .fund');
+  var pe=document.getElementById('g-parts');
+  /* no fitting parts to a truck you do not own yet */
+  var owned=have(VEHICLES[VEH]);
+  if(fw) fw.hidden=!owned;
+  if(pe) pe.hidden=!owned;
+  if(pe && owned){
+    var u=upLevels(VEHICLES[VEH].id), h='';
+    for(var pi=0;pi<PARTS.length;pi++){
+      var P=PARTS[pi], lv=u[P.k]||0, pips='';
+      for(var z=0;z<3;z++) pips+='<u class="'+(z<lv?'on':'')+'"></u>';
+      var btn;
+      if(lv>=3) btn='<button class="go ghost pbuy max" disabled>Fitted</button>';
+      else{
+        var pr=upPrice(lv), can=bank()>=pr;
+        btn='<button class="go ghost pbuy'+(can?'':' short')+'" data-part="'+P.k+'">'+
+            commas(pr)+'</button>';
+      }
+      h+='<div class="part"><div class="pn"><div class="pt">'+P.name+
+         '<span class="pips">'+pips+'</span></div><div class="pd">'+P.why+
+         '</div></div>'+btn+'</div>';
+    }
+    pe.innerHTML=h;
+  }
   /* Show the price rather than hiding the car. You should be able to see what
      you are driving towards. */
   var lk=document.getElementById('g-lock'), tk=document.getElementById('g-take');
@@ -6567,6 +6689,10 @@ function closeGarage(){
   setTally(PROG.score,true);
   S.running=true; last=performance.now(); acc=0;
 }
+document.getElementById('g-parts').addEventListener('click',function(ev){
+  var b=ev.target.closest? ev.target.closest('.pbuy') : null;
+  if(b && b.getAttribute('data-part')) fitPart(b.getAttribute('data-part'));
+});
 document.getElementById('b-garage').addEventListener('click',openGarage);
 document.getElementById('b-settings').addEventListener('click',function(){
   show('menu',false); show('settings',true);
