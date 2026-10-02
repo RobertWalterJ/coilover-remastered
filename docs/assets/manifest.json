@@ -2170,5 +2170,47 @@
    4.73,
    12.38
   ]
+ },
+ "props/desert/tyre_stack": {
+  "file": "props/desert/tyre_stack.glb",
+  "nodes": [
+   "tyre_stack",
+   "tyre_stack_main",
+   "tyre_stack_snow"
+  ],
+  "tris": 512,
+  "materials": {
+   "tyre": {
+    "color": "#1f1c22"
+   },
+   "tyretop": {
+    "color": "#e4432b"
+   },
+   "snow": {
+    "color": "#eef2f6"
+   }
+  },
+  "note": "circuit set dressing; placed from terrain/desert/set_dressing_desert.json"
+ },
+ "props/desert/gate_board": {
+  "file": "props/desert/gate_board.glb",
+  "nodes": [
+   "gate_board",
+   "gate_board_main",
+   "gate_board_snow"
+  ],
+  "tris": 120,
+  "materials": {
+   "boardpost": {
+    "color": "#6b5a52"
+   },
+   "gateboard": {
+    "color": "#efe4cf"
+   },
+   "snow": {
+    "color": "#eef2f6"
+   }
+  },
+  "note": "circuit set dressing; placed from terrain/desert/set_dressing_desert.json"
  }
 }

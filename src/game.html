@@ -2915,6 +2915,16 @@ function tmapAt(T, x, z){
    materials. `MDL.get(key)` returns a fresh clone of a loaded model; the
    materials inside it are shared instances, which is what the glow system and
    the shader patching both require. */
+/* The vehicle GLBs ship with no material extras, so their materials arrive
+   with no weather role and weather.js would skip them entirely: a dry truck
+   in a wet world. Roles are inferred from the material name, which is the
+   game's own vocabulary, for anything the file does not declare. */
+var ROLE_BY_NAME={
+  paint:'paint', second:'paint', accent:'paint', flare:'paint', caliper:'paint',
+  carbon:'metal', chrome:'metal', trim:'metal', rim:'metal', disc:'metal',
+  spring:'metal', lug:'rubber', tyre:'rubber', shoulder:'rubber', rubber:'rubber',
+  glass:'glass', canvas:'wood'
+};
 var MDL=(function(){
   var ROOT='assets/', manifest=null, cache={}, mats={}, given={}, pending={}, ready=false;
 
@@ -2938,6 +2948,7 @@ var MDL=(function(){
       o.transparent=true; o.opacity=spec.opacity;
     }
     var m=new THREE.MeshPhongMaterial(o);
+    m.name=name;                      /* or every material downstream is unnamed */
     /* A lit part glows rather than being painted bright: register it so the
        time of day drives it, exactly as the hand built props do. */
     if(name.indexOf('glow_')===0){
@@ -2962,7 +2973,8 @@ var MDL=(function(){
       var src=o.material, nm=(src && src.name) || 'trim';
       var spec=(MDL.specOf(nm)) || {color:'#'+(src&&src.color? src.color.getHexString():'888888')};
       /* GLTFLoader puts glTF material `extras` into material.userData */
-      var role=(src && src.userData && src.userData.role) || spec.role || null;
+      var role=(src && src.userData && src.userData.role) || spec.role
+               || ROLE_BY_NAME[nm] || null;
       o.material=matFor(nm, spec, opts, role);
     });
     return root;
