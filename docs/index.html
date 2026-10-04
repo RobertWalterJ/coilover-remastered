@@ -1749,7 +1749,31 @@ var PROG={ up:{}, spent:0,
            odo:0, air:0, gates:0, found:{}, jump:[0,0,0], jumpAt:[null,null,null],
            score:0, career:0, best:0, top:0, lap:0, seg:{}, feat:{},
            mapv:new Uint8Array(MAPN*MAPN), mapc:new Uint8Array(MAPN*MAPN) };
-var SAVEKEY='coilover.v1';
+/* ---- this app's own corner of localStorage ----
+   One origin serves every app Robert publishes, so a key name is a shared
+   name. These used to be the original Coilover's keys exactly, which meant
+   the two games shared one save and overwrote each other. See src/storage.py. */
+var SAVEKEY='coilover-remastered.v1';
+var LS_CLOCK='coilover-remastered.clock', LS_MAP='coilover-remastered.map',
+    LS_PEDAL='coilover-remastered.pedal', LS_VEH='coilover-remastered.veh';
+
+/* Carry his progress over once, rather than starting him at zero. Runs before
+   anything reads a key, copies only what is not already here, and never
+   writes back to the old names. */
+(function(){
+  try{
+    var moves=[[SAVEKEY,'coilover.v1'], [LS_CLOCK,'coilover.clock'],
+               [LS_MAP,'coilover.map'], [LS_PEDAL,'coilover.pedal'],
+               [LS_VEH,'coilover.veh']];
+    for(var i=0;i<moves.length;i++){
+      var to=moves[i][0], from=moves[i][1];
+      if(localStorage.getItem(to)===null){
+        var v=localStorage.getItem(from);
+        if(v!==null) localStorage.setItem(to,v);
+      }
+    }
+  }catch(_){}
+})();
 
 function loadProg(){
   try{
@@ -6855,7 +6879,7 @@ function setClock(m){
   TOD.drift=m;
   var b=document.getElementById('b-drift');
   if(b) b.textContent='Time passes: '+CLOCK_NAMES[m];
-  try{ localStorage.setItem('coilover.clock',String(m)); }catch(_){}
+  try{ localStorage.setItem(LS_CLOCK,String(m)); }catch(_){}
 }
 document.getElementById('b-drift').addEventListener('click',function(){
   setClock((TOD.drift+1)%CLOCK_NAMES.length);
@@ -6891,7 +6915,7 @@ function setMap(i){
   breakChain();
   GRUN.on=false; GRUN.n=0; GRUN.t=0;
   resetRuns();                 /* the open runs belong to the map you are on */
-  try{ localStorage.setItem('coilover.map',String(i)); }catch(_){}
+  try{ localStorage.setItem(LS_MAP,String(i)); }catch(_){}
   var b=document.getElementById('b-map');
   if(b) b.textContent='Map: '+MAPS[i].name;
 }
@@ -6908,7 +6932,7 @@ function setPedalMode(m){
   IN.gas=IN.brake=0; IN.revHold=0;
   gasEl.classList.remove('on'); brakeEl.classList.remove('on','slide');
   pedalClear(gasEl); pedalClear(brakeEl);
-  try{ localStorage.setItem('coilover.pedal',String(m)); }catch(_){}
+  try{ localStorage.setItem(LS_PEDAL,String(m)); }catch(_){}
 }
 document.getElementById('b-pedal').addEventListener('click',function(){
   setPedalMode((PEDAL_MODE+1)%PEDAL_NAMES.length);
@@ -6981,7 +7005,7 @@ function pickVehicle(i){
     S.v.set(0,0,0); S.w.set(0,0,0);
   }
   if(have(VEHICLES[i])){
-    try{ localStorage.setItem('coilover.veh',String(i)); }catch(_){}
+    try{ localStorage.setItem(LS_VEH,String(i)); }catch(_){}
   }
   garageCard();
 }
@@ -7051,18 +7075,18 @@ document.getElementById('b-tilt').addEventListener('click',function(){
 /* ================= go ================= */
 rebuildLightPts();
 (function(){
-  var m=0; try{ m=parseInt(localStorage.getItem('coilover.pedal')||'0',10)||0; }catch(_){}
+  var m=0; try{ m=parseInt(localStorage.getItem(LS_PEDAL)||'0',10)||0; }catch(_){}
   setPedalMode(Math.max(0,Math.min(PEDAL_NAMES.length-1,m)));
   resetRuns();
-  var ck=0; try{ ck=parseInt(localStorage.getItem('coilover.clock')||'0',10)||0; }catch(_){}
+  var ck=0; try{ ck=parseInt(localStorage.getItem(LS_CLOCK)||'0',10)||0; }catch(_){}
   setClock(Math.max(0,Math.min(CLOCK_NAMES.length-1,ck)));
   setTally(PROG.score,true);
-  var mp=0; try{ mp=parseInt(localStorage.getItem('coilover.map')||'0',10)||0; }catch(_){}
+  var mp=0; try{ mp=parseInt(localStorage.getItem(LS_MAP)||'0',10)||0; }catch(_){}
   if(mp>0 && mp<MAPS.length) setMap(mp); else {
     var mb=document.getElementById('b-map');
     if(mb) mb.textContent='Map: '+MAPS[0].name;
   }
-  var v=0; try{ v=parseInt(localStorage.getItem('coilover.veh')||'0',10)||0; }catch(_){}
+  var v=0; try{ v=parseInt(localStorage.getItem(LS_VEH)||'0',10)||0; }catch(_){}
   v=Math.max(0,Math.min(VEHICLES.length-1,v));
   if(!have(VEHICLES[v])) v=lastOwned();      /* a save from before prices */
   window.__setVehicle(v);
