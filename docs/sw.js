@@ -2,7 +2,7 @@
    The page is network first, so an update lands the moment you open it with a
    signal. three.js and the icons are cache first because they never change.
    Both fall back to the cache when there is no signal at all. */
-var CACHE = 'coilover-remastered-v1';
+var CACHE = 'coilover-remastered-v2';
 var SHELL = ['./', './index.html', './vendor/three.min.js',
              './vendor/GLTFLoader.js', './assets/manifest.json',
              './manifest.webmanifest',
@@ -82,9 +82,37 @@ SHELL = SHELL.concat([
   './assets/vehicles/veloce_wheels.glb'
 ]);
 
+/* The shell splits in two, and the reason matters on a phone.
+   `cache.addAll` is ATOMIC: one request out of seventy seven fails and the
+   whole promise rejects, the install event fails with it, and the worker
+   never activates. Seventy seven requests is 20.6 MB, most of it models, and
+   asking a phone on mobile data to land all of that in one all or nothing
+   batch before the app will work offline is a bad bet.
+   So the small things that make the app run are atomic, and the models are
+   filled in afterwards one at a time with failures ignored. Nothing is lost
+   by that: the fetch handler below caches every asset as the game loads it,
+   so the precache only ever mattered to someone who installed and went
+   offline without playing first. */
+var CORE = ['./', './index.html', './vendor/three.min.js', './vendor/GLTFLoader.js',
+            './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png'];
+
 self.addEventListener('install', function(e){
-  e.waitUntil(caches.open(CACHE).then(function(c){ return c.addAll(SHELL); })
-    .then(function(){ return self.skipWaiting(); }));
+  e.waitUntil(caches.open(CACHE).then(function(c){
+    return c.addAll(CORE).then(function(){
+      return self.skipWaiting();
+    }).then(function(){
+      /* best effort, and deliberately not awaited by the install event */
+      return SHELL.reduce(function(p, url){
+        return p.then(function(){
+          return c.match(url).then(function(hit){
+            if(hit) return;
+            return fetch(url).then(function(r){ if(r.ok) return c.put(url, r); })
+                             .catch(function(){});
+          });
+        });
+      }, Promise.resolve());
+    });
+  }));
 });
 
 self.addEventListener('activate', function(e){
@@ -97,7 +125,13 @@ self.addEventListener('fetch', function(e){
   var req = e.request;
   if (req.method !== 'GET') return;
   var path = new URL(req.url).pathname;
-  var isPage = req.mode === 'navigate' || path === '/' || /index\.html$/.test(path);
+  /* Only the app's OWN entry counts as the page. Treating every navigation as
+     the page meant any other file opened in this scope, install-check.html
+     for one, was written over the cached game, and offline every address in
+     scope served the game back whatever you had asked for. */
+  var home = new URL('./', self.registration.scope).pathname;
+  var isPage = (req.mode === 'navigate' || /index\.html$/.test(path)) &&
+               (path === home || path === home + 'index.html');
 
   if (isPage) {
     e.respondWith(fetch(req).then(function(res){

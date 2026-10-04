@@ -1,6 +1,7 @@
 {
-  "name": "Coilover",
-  "short_name": "Coilover",
+  "id": "/coilover-remastered/",
+  "name": "Coilover Remastered",
+  "short_name": "Remastered",
   "description": "A desert basin, a big truck, and suspension you can watch working.",
   "start_url": ".",
   "scope": ".",

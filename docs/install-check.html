@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#17121b">
+<title>Install Check</title>
+<!-- The app's own manifest, deliberately. This page sits inside the app's
+     scope, so pointing at it means Chrome judges THIS page by exactly the
+     rules it judges the game by, and the install button below installs the
+     real thing rather than a copy of the checker. -->
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700&family=Spline+Sans+Mono:wght@400;600&display=swap">
+<style>
+  :root{
+    --ground:#17121b; --panel:#201923; --panel2:#2a2130; --edge:#3a2e42;
+    --cream:#f2e9dd; --mute:#9b8ca6; --amber:#f0a92e; --green:#5fc08a;
+    --red:#e2543f; --sans:'Archivo',system-ui,-apple-system,sans-serif;
+    --mono:'Spline Sans Mono',ui-monospace,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--ground);color:var(--cream);font-family:var(--sans);
+       font-size:16px;line-height:1.5;
+       padding:22px 16px calc(40px + env(safe-area-inset-bottom));
+       -webkit-text-size-adjust:100%}
+  main{max-width:620px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+  h1{font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
+     color:var(--mute);margin:0}
+  h2{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+     color:var(--mute);margin:0 0 10px}
+  .verdict{background:var(--panel);border:1px solid var(--edge);border-radius:14px;
+           padding:18px 18px 20px}
+  .verdict .big{font-size:23px;font-weight:700;line-height:1.2;text-wrap:balance;
+                margin:0 0 8px}
+  .verdict p{margin:0;color:var(--mute);font-size:15px}
+  .verdict.ok{border-color:#3f6b52}
+  .verdict.ok .big{color:var(--green)}
+  .verdict.no{border-color:#6b3a31}
+  .verdict.no .big{color:var(--amber)}
+  button{font-family:var(--sans);font-size:16px;font-weight:700;letter-spacing:.04em;
+         border:0;border-radius:11px;padding:15px 18px;width:100%;
+         background:var(--amber);color:#2a1c06;cursor:pointer;margin-top:14px}
+  button.ghost{background:transparent;color:var(--cream);border:1px solid var(--edge)}
+  button:focus-visible{outline:2px solid var(--cream);outline-offset:2px}
+  section{background:var(--panel);border:1px solid var(--edge);border-radius:14px;
+          padding:16px}
+  .row{display:flex;gap:11px;align-items:flex-start;padding:9px 0;
+       border-top:1px solid var(--edge)}
+  .row:first-of-type{border-top:0;padding-top:0}
+  .dot{flex:0 0 9px;height:9px;border-radius:50%;margin-top:7px;background:var(--mute)}
+  .dot.y{background:var(--green)} .dot.n{background:var(--red)}
+  .dot.q{background:var(--amber)}
+  .k{flex:1;min-width:0}
+  .k b{display:block;font-weight:700;font-size:14px}
+  .k span{display:block;color:var(--mute);font-size:13px;line-height:1.4;
+          overflow-wrap:anywhere}
+  .v{font-family:var(--mono);font-size:12px;color:var(--mute);text-align:right;
+     flex:0 0 auto;max-width:42%;overflow-wrap:anywhere;margin-top:2px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{text-align:left;font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+     color:var(--mute);font-weight:700;padding:0 8px 7px 0}
+  td{padding:7px 8px 7px 0;border-top:1px solid var(--edge);vertical-align:top;
+     overflow-wrap:anywhere}
+  td.m{font-family:var(--mono);font-size:12px;color:var(--mute)}
+  .flag{color:var(--red);font-weight:700}
+  .scroll{overflow-x:auto}
+  a{color:var(--amber)}
+  footer{color:var(--mute);font-size:13px;text-align:center}
+</style>
+</head>
+<body>
+<main>
+  <h1>Install check</h1>
+
+  <div class="verdict" id="verdict">
+    <div class="big" id="vtitle">Looking at this phone</div>
+    <p id="vbody">One moment.</p>
+    <div id="vact"></div>
+  </div>
+
+  <section>
+    <h2>This app</h2>
+    <div id="app"></div>
+  </section>
+
+  <section>
+    <h2>This phone</h2>
+    <div id="phone"></div>
+  </section>
+
+  <section>
+    <h2>Everything at robertwalterj.github.io</h2>
+    <div class="scroll"><table id="apps">
+      <thead><tr><th>App</th><th>Name on the home screen</th><th>Identity</th></tr></thead>
+      <tbody></tbody>
+    </table></div>
+    <button class="ghost" id="copy">Copy this report</button>
+  </section>
+
+  <footer>Open this page in the browser you want to install from.</footer>
+</main>
+
+<script>
+/* Catch the install offer before anything else runs, or it is missed. */
+var deferred=null, promptFired=false;
+addEventListener('beforeinstallprompt', function(e){
+  e.preventDefault(); deferred=e; promptFired=true; decide();
+});
+addEventListener('appinstalled', function(){
+  deferred=null;
+  set('ok','Installed.','It is on your home screen now. Close this tab and open it from there.');
+});
+
+var APPS=['coilover','coilover-remastered','landfall','hokgong','citysteps-reader',
+          'first-return','hinterland','palimpsest','stack-effect'];
+var R={};                                  /* everything found, for the report */
+
+function el(id){ return document.getElementById(id); }
+function row(state,label,detail,value){
+  return '<div class="row"><i class="dot '+state+'"></i><div class="k"><b>'+label+'</b>'+
+         (detail?'<span>'+detail+'</span>':'')+'</div>'+
+         (value?'<div class="v">'+value+'</div>':'')+'</div>';
+}
+function set(kind,title,body,action){
+  el('verdict').className='verdict '+(kind||'');
+  el('vtitle').textContent=title;
+  el('vbody').textContent=body;
+  el('vact').innerHTML=action||'';
+  if(action){
+    var b=el('vact').querySelector('button');
+    if(b) b.addEventListener('click',doInstall);
+  }
+}
+
+function doInstall(){
+  if(!deferred) return;
+  deferred.prompt();
+  deferred.userChoice.then(function(c){
+    if(c.outcome!=='accepted')
+      set('no','Install was dismissed.','Reload this page and tap Install again when you are ready.');
+  });
+}
+
+/* ---- what we know about this phone and this app ---- */
+var F={};
+
+function browserName(){
+  var u=navigator.userAgent;
+  if(/CriOS/.test(u)) return 'Chrome on iPhone or iPad';
+  if(/FxiOS/.test(u)) return 'Firefox on iPhone or iPad';
+  if(/iPhone|iPad|iPod/.test(u)) return 'Safari on iPhone or iPad';
+  if(/SamsungBrowser/.test(u)) return 'Samsung Internet';
+  if(/EdgA|Edg\//.test(u)) return 'Edge';
+  if(/Firefox/.test(u)) return 'Firefox';
+  if(/OPR|Opera/.test(u)) return 'Opera';
+  if(/Chrome/.test(u)) return 'Chrome';
+  return 'Something else';
+}
+function isIOS(){ return /iPhone|iPad|iPod/.test(navigator.userAgent); }
+function isChromium(){
+  return /Chrome|CriOS|Edg|SamsungBrowser|OPR/.test(navigator.userAgent) && !isIOS();
+}
+function standalone(){
+  return matchMedia('(display-mode: standalone)').matches ||
+         matchMedia('(display-mode: fullscreen)').matches ||
+         matchMedia('(display-mode: minimal-ui)').matches ||
+         navigator.standalone===true;
+}
+
+function decide(){
+  if(!F.ready) return;
+  if(F.installedNow){
+    set('ok','You are already in the installed app.',
+        'This page is running from the home screen copy, not the browser, so there is nothing left to install.');
+    return;
+  }
+  if(deferred){
+    set('ok','Yes, this phone can install it.',
+        'Everything checks out. Tap the button and it goes on your home screen.',
+        '<button>Install it now</button>');
+    return;
+  }
+  if(isIOS()){
+    set('no','On iPhone and iPad there is no install button.',
+        'Apple does not allow one. Tap the Share box with the arrow coming out of it, scroll down, and choose Add to Home Screen. It has to be Safari: Chrome on an iPhone cannot do it either.');
+    return;
+  }
+  if(!isChromium()){
+    set('no','This browser does not offer installing.',
+        'You are in ' + F.browser + '. Open the same address in Chrome and try again.');
+    return;
+  }
+  if(F.broken.length){
+    set('no','Something is missing on the page itself.',
+        F.broken.join(' ') + ' Tell Claude and it can be fixed at this end.');
+    return;
+  }
+  if(F.lowStorage){
+    set('no','Your phone is low on space.',
+        'There is about ' + F.freeTxt + ' of room left for websites, and installing needs more than that. Clearing a little space is usually all it takes.');
+    return;
+  }
+  set('no','Chrome is not offering it, and nothing is wrong with the page.',
+      'Everything this page can check is fine, so the usual answer is that it is already on your phone. Look in the app drawer, or open the Chrome menu: if it says Open in app instead of Install app, it is installed. If you want a fresh copy, uninstall it first, then come back here.');
+}
+
+/* ---- the checks ---- */
+(async function(){
+  F.broken=[]; F.browser=browserName(); F.installedNow=standalone();
+
+  var rows='';
+  var https=(location.protocol==='https:'||location.hostname==='localhost');
+  rows+=row(https?'y':'n','Secure connection',
+            https?'Served over https, which installing requires.':'Not https. Installing is impossible without it.',
+            location.protocol.replace(':',''));
+  if(!https) F.broken.push('The page is not being served securely.');
+
+  /* the manifest */
+  var mlink=document.querySelector('link[rel="manifest"]');
+  var man=null, mhref=mlink?mlink.href:null;
+  if(mhref){ try{ var mr=await fetch(mhref,{cache:'no-store'}); if(mr.ok) man=await mr.json(); }catch(e){} }
+  rows+=row(man?'y':'n','App details file',
+            man?'Found and readable.':'The manifest is missing or will not parse, so nothing can be installed.',
+            man?'ok':'missing');
+  if(!man) F.broken.push('The app details file could not be read.');
+
+  if(man){
+    var need=[];
+    if(!man.name && !man.short_name) need.push('a name');
+    if(!man.start_url) need.push('a starting page');
+    if(!man.display || man.display==='browser') need.push('a display mode');
+    if(!(man.icons||[]).length) need.push('icons');
+    rows+=row(need.length?'n':'y','Required details',
+              need.length?('Missing '+need.join(', ')+'.'):'Name, starting page, display mode and icons are all set.',
+              man.name||'');
+    if(need.length) F.broken.push('The app details file is missing '+need.join(', ')+'.');
+
+    /* icons have to actually load, and a 404 here is silent */
+    var bad=0, checked=0;
+    for(var i=0;i<(man.icons||[]).length;i++){
+      try{ var ir=await fetch(new URL(man.icons[i].src, mhref).href,{cache:'no-store'});
+           checked++; if(!ir.ok) bad++; }catch(e){ checked++; bad++; }
+    }
+    rows+=row(bad?'n':'y','Icons',
+              bad?(bad+' of '+checked+' will not load. A missing icon stops the install with no message.')
+                 :(checked+' found, all loading.'),
+              checked+' icons');
+    if(bad) F.broken.push(bad+' of the icons will not load.');
+    F.man=man;
+  }
+
+  /* the service worker */
+  var sw='none', ctl=false;
+  try{
+    var reg=await navigator.serviceWorker.getRegistration();
+    if(reg) sw=reg.active?'active':(reg.installing?'installing':(reg.waiting?'waiting':'registered'));
+    ctl=!!navigator.serviceWorker.controller;
+  }catch(e){ sw='blocked'; }
+  rows+=row(sw==='active'?'y':(sw==='none'?'n':'q'),'Offline worker',
+            sw==='active'?('Running'+(ctl?' and looking after this page.':', though it is not in charge of this page yet. Reload once.'))
+            :sw==='installing'?'Still setting itself up. It downloads about 20 MB the first time, so give it a moment on a slow connection.'
+            :sw==='none'?'Not registered here. Some phones will not offer an install without one.'
+            :'In an unusual state.',
+            sw);
+  F.sw=sw;
+
+  /* room to put it */
+  var freeTxt='unknown';
+  try{
+    var est=await navigator.storage.estimate();
+    if(est && est.quota){
+      var free=est.quota-(est.usage||0);
+      freeTxt=(free/1048576).toFixed(0)+' MB';
+      F.lowStorage=free < 80*1048576;
+      rows+=row(F.lowStorage?'n':'y','Room for it',
+                F.lowStorage?'Tight. Installing needs more space than is left.'
+                            :'Enough space to install and keep the models offline.',
+                freeTxt+' free');
+    }
+  }catch(e){}
+  F.freeTxt=freeTxt;
+  el('app').innerHTML=rows;
+
+  /* ---- this phone ---- */
+  var p='';
+  p+=row('q','Browser','Installing only works from Chrome on Android, or Safari on iPhone.',F.browser);
+  p+=row(F.installedNow?'y':'q','Running as',
+         F.installedNow?'This page is the installed app, not a browser tab.':'A normal browser tab.',
+         F.installedNow?'installed':'browser tab');
+  p+=row('q','Screen','',innerWidth+' x '+innerHeight);
+  p+=row('q','Address','This is the address the app installs from.',location.pathname);
+  el('phone').innerHTML=p;
+
+  /* ---- every app on this address, and whether any two collide ---- */
+  var seenName={}, seenId={}, found=[];
+  for(var a=0;a<APPS.length;a++){
+    var base='/'+APPS[a]+'/';
+    try{
+      var r=await fetch(base+'manifest.webmanifest',{cache:'no-store'});
+      if(!r.ok) continue;
+      var j=await r.json();
+      found.push({dir:APPS[a], name:j.name||'', short:j.short_name||'', id:j.id||''});
+    }catch(e){}
+  }
+  found.forEach(function(f){
+    var k=(f.short||f.name).toLowerCase();
+    seenName[k]=(seenName[k]||0)+1;
+    var ik=(f.id||('start:'+f.dir)).toLowerCase();
+    seenId[ik]=(seenId[ik]||0)+1;
+  });
+  var tb=el('apps').querySelector('tbody'), html='';
+  found.forEach(function(f){
+    var k=(f.short||f.name).toLowerCase();
+    var clash=seenName[k]>1;
+    html+='<tr><td class="m">'+f.dir+'</td><td>'+(f.short||f.name)+
+          (clash?' <span class="flag">same as another</span>':'')+
+          '</td><td class="m">'+(f.id||'not set')+'</td></tr>';
+  });
+  tb.innerHTML=html;
+  R.apps=found;
+
+  F.ready=true;
+  decide();
+
+  /* If Chrome was going to offer an install it has had its chance by now.
+     No countdown on screen: the verdict simply settles. */
+  setTimeout(function(){ if(!promptFired) decide(); }, 1800);
+
+  el('copy').addEventListener('click',function(){
+    var txt='Install check — '+location.href+'\n'+
+      'browser: '+F.browser+'\nrunning as: '+(F.installedNow?'installed app':'browser tab')+
+      '\ninstall offer fired: '+promptFired+'\nservice worker: '+F.sw+
+      '\nfree space: '+F.freeTxt+'\nproblems: '+(F.broken.length?F.broken.join(' '):'none')+
+      '\nverdict: '+el('vtitle').textContent+'\n\napps on this address:\n'+
+      found.map(function(f){ return '  '+f.dir+'  short="'+f.short+'"  id='+(f.id||'not set'); }).join('\n')+
+      '\n\nuser agent: '+navigator.userAgent+'\n';
+    (navigator.clipboard&&navigator.clipboard.writeText
+      ? navigator.clipboard.writeText(txt) : Promise.reject())
+      .then(function(){ el('copy').textContent='Copied. Paste it to Claude.'; })
+      .catch(function(){
+        var t=document.createElement('textarea');
+        t.value=txt; t.style.width='100%'; t.style.height='170px';
+        t.style.marginTop='12px'; t.style.background='#120e16';
+        t.style.color='#f2e9dd'; t.style.border='1px solid #3a2e42';
+        t.style.borderRadius='9px'; t.style.fontSize='12px'; t.style.padding='9px';
+        el('copy').parentNode.appendChild(t); t.select();
+        el('copy').textContent='Select it all and copy';
+      });
+  });
+})();
+</script>
+</body>
+</html>
